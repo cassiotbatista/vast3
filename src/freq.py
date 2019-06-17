@@ -12,6 +12,11 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 import numpy as np
+pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_columns', None)  
+
+#pd.set_option('display.max_rowwidth', -1)
+pd.set_option('display.max_rows', None)  
 
 import matplotlib.pyplot as plt
 plt.rcParams['axes.axisbelow'] = True
@@ -38,6 +43,7 @@ class EarthQuakeData:
 
         curr_date   = first_date
         time_chunks = []
+        count = 0
         while curr_date < last_date:
             next_date = curr_date + timedelta(minutes=TIME_INTERVAL)
             #print(first_date, '|||', curr_date, '@@', next_date, '|||', last_date)
@@ -93,6 +99,7 @@ def plot_bar_tweet_freq(vec):
 if __name__=='__main__':
     eq = EarthQuakeData()
     eq.sortby('time')
+
     chunks = eq.splitby_time()
 
     lengths = []
