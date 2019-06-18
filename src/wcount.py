@@ -25,7 +25,7 @@ AVOID_CONTAINS = [
 
 AVOID_RADICALS = [
     'some', 'they', 'anyo', 'that', 'anyt', 'this', 'have', 'with', 'just',
-    #'ther', # could it be thermometer?
+    'ther', # could it be thermometer? # NO!
     'your', 'will',
     #'work', # can it be useful?
     'what', 'from',
@@ -88,6 +88,12 @@ class EarthQuakeData:
     def __init__(self):
         super(EarthQuakeData, self).__init__()
         self.data = pd.read_csv('../MC3/data/YInt.csv')
+        self.replace = {}
+        with open('replace.txt', 'r') as f:
+            for line in f:
+                key, value = line.split()
+                self.replace[key] = value
+        print(self.replace)
 
         print('converting from strtime to datetime...')
         self.data['time'] = pd.to_datetime(self.data['time'], format='%Y-%m-%d %H:%M:%S')
@@ -104,6 +110,9 @@ class EarthQuakeData:
             if isinstance(instance, str):
                 for word in instance.split():
                     if len(word) > 3:
+                        for key, value in self.replace.items():
+                            if key in word:
+                                word = word.replace(key, value)
                         baseword = word.replace('#','')[:4].lower()
                         wordlist.append(baseword)
                         wordset.add(baseword)
@@ -119,7 +128,7 @@ if __name__=='__main__':
     eq = EarthQuakeData()
     eq.sortby('time')
     wordcount = eq.count_w3()
-    with open('radical_freq.txt', 'w') as f:
+    with open('radical_freq2.txt', 'w') as f:
         for i, element in enumerate(wordcount):
             word, freq = element
             f.write('%4s: %5d\n' % (word, freq))
