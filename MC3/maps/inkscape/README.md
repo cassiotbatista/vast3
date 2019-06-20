@@ -15,8 +15,3 @@
 5. Follow the steps to vectorize the image:
     - apply bitmap tracing with multi scana in 8 colours scans with no smoothness
     - save as `map.svg`
-
-## Flowchart Graph
-graph TD;
-    A-->B;
-    A-->C;
