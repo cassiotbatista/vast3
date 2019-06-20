@@ -8,7 +8,10 @@
     - add alpha channel to make the bg transparent
     - apply threshold with pixel value of 1 to discard white colours
     - export as `in-edges.png`
-3. Open `in-edges.png` with inkscape
-4. Follow the steps to vectorize the image:
+3. Load both `in-*.png` on ImageMagick 
+    - sum them up with the `-coalesce` option 
+    - save the output image as `map.png` 
+4. Open `map.png` with inkscape
+5. Follow the steps to vectorize the image:
     - apply bitmap tracing with multi scana in 8 colours scans with no smoothness
     - save as `map.svg`
