@@ -17,7 +17,7 @@ from bokeh.embed import file_html
 from bokeh.resources import INLINE
 from bokeh.util.browser import view
 from bokeh.models.layouts import Row, Column
-from bokeh.models.widgets import DateRangeSlider
+from bokeh.models.widgets import RangeSlider
 
 from bokeh.io import output_file, show
 from bokeh.layouts import gridplot
@@ -111,7 +111,7 @@ date_range_slider = DateRangeSlider(
 sliders = Row(children=[
     Column(children=[
         grid,
-        date_range_slider,
+        range_slider,
     ]),
 ])
 
