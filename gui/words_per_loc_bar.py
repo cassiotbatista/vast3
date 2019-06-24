@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+#
+# author: jun 2019
+# cassio batista - https://cassota.gitlab.io/
 
 import sys
 import os
@@ -33,6 +36,8 @@ from bokeh.transform import linear_cmap
 
 from data_handler import load_data, get_useless_words, get_useful_words
 
+NUM_WORDS = 10
+
 data = load_data()
 w_useless = get_useless_words()
 w_useful  = get_useful_words()
@@ -55,25 +60,22 @@ for location, tweet in zip(data['location'], data['message']): # TODO add time f
                     word_count[location][word] += 1
                 else:
                     word_count[location][word]  = 1
+
 plots = []
 for key, value in word_count.items():
     if key.startswith('unk') or key.startswith('<loc'):
         continue
-    y = np.arange(10)
-    wordfreqlist = sorted(value.items(), key=lambda kv: kv[1], reverse=True)
+    y = np.arange(NUM_WORDS)
+    wordfreqlist = sorted(value.items(), key=lambda kv: kv[1], reverse=True)[:NUM_WORDS]
     x = []
     words = []
     for i, element in enumerate(wordfreqlist):
         word, freq = element
         x.append(freq)
         words.append(word)
-        if i == 9:
-            break
 
-    print(max(x), min(x))
     source = ColumnDataSource(dict(y=y, right=x,))
-    plt = Plot( 
-                title=None, plot_width=95, plot_height=400,
+    plt = Plot(title=None, plot_width=95, plot_height=400,
                 min_border=0, toolbar_location=None)
     t = Title()
     t.text = key.split()[0]
@@ -90,8 +92,6 @@ for key, value in word_count.items():
     yaxis = LinearAxis()
     for i, word in enumerate(words):
         yticklabels[str(i)] = word.strip().rstrip()
-        if i == 9:   
-            break
     yaxis.ticker = y
     yaxis.major_label_overrides = yticklabels
     yaxis.major_label_standoff = -35
@@ -102,8 +102,7 @@ for key, value in word_count.items():
 
     plots.append(plt)
 
-plt = Plot( 
-        title=None, plot_width=60, plot_height=400,
+plt = Plot(title=None, plot_width=60, plot_height=400,
         min_border=0, toolbar_location=None)
 color_bar = ColorBar(
             color_mapper=mapper['transform'], 
@@ -126,7 +125,7 @@ date_range_slider = DateRangeSlider(
             step   = 1,
             bar_color='purple')
 
-sliders = Row(children=[
+main_gui = Row(children=[
     Column(children=[
         grid,
         date_range_slider,
@@ -134,11 +133,11 @@ sliders = Row(children=[
 ])
 
 doc = Document()
-doc.add_root(sliders)
+doc.add_root(main_gui)
 
 if __name__ == "__main__":
     doc.validate()
-    filename = "sliders.html"
+    filename = "vast-mc3.html"
     with open(filename, "w") as f:
-        f.write(file_html(doc, INLINE, "sliders"))
+        f.write(file_html(doc, INLINE, "vast-mc3"))
     view(filename)
