@@ -7,9 +7,6 @@ import sys
 import os
 import re
 
-from datetime import date
-
-import collections
 import math
 
 import pandas as pd
@@ -20,16 +17,12 @@ from bokeh.embed import file_html
 from bokeh.resources import INLINE
 from bokeh.util.browser import view
 from bokeh.models.layouts import Row, Column
-from bokeh.models.widgets import DateRangeSlider
-
-from bokeh.io import output_file, show
-from bokeh.layouts import gridplot
-from bokeh.palettes import Viridis3
-from bokeh.plotting import figure
-
+from bokeh.models.widgets import DateRangeSlider, Button
 from bokeh.models.annotations import Title
 from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, LabelSet, Label, ColorBar, FixedTicker
 from bokeh.models.glyphs import HBar
+
+from bokeh.layouts import gridplot
 
 from bokeh.palettes import Spectral6
 from bokeh.transform import linear_cmap
@@ -37,6 +30,7 @@ from bokeh.transform import linear_cmap
 from data_handler import load_data, get_useless_words, get_useful_words
 
 NUM_WORDS = 10
+MIN_WLEN  = 3
 
 data = load_data()
 w_useless = get_useless_words()
@@ -52,8 +46,8 @@ for location, tweet in zip(data['location'], data['message']): # TODO add time f
     if isinstance(tweet, str):
         tweet = re.sub('[#@!?,.;]', ' ', tweet)
         for word in tweet.split():
-            if len(word) > 3:
-                word = word[:4]
+            if len(word) > MIN_WLEN:
+                word = word[:MIN_WLEN+1]
                 if word in w_useless:
                     continue
                 if word in word_count[location]:
@@ -63,20 +57,24 @@ for location, tweet in zip(data['location'], data['message']): # TODO add time f
 
 plots = []
 for key, value in word_count.items():
-    if key.startswith('unk') or key.startswith('<loc'):
+    if key.startswith('unk') or key.startswith('<loc'): # useless tweets here
         continue
     y = np.arange(NUM_WORDS)
-    wordfreqlist = sorted(value.items(), key=lambda kv: kv[1], reverse=True)[:NUM_WORDS]
+    wordfreqlist = sorted(value.items(), key=lambda kv: kv[1], reverse=True)
     x = []
     words = []
-    for i, element in enumerate(wordfreqlist):
+    for i, element in enumerate(wordfreqlist[:NUM_WORDS]):
         word, freq = element
         x.append(freq)
         words.append(word)
 
     source = ColumnDataSource(dict(y=y, right=x,))
-    plt = Plot(title=None, plot_width=95, plot_height=400,
-                min_border=0, toolbar_location=None)
+    plt = Plot(
+            title            = None, 
+            plot_width       = 95, 
+            plot_height      = 400,
+            min_border       = 0, 
+            toolbar_location = None)
     t = Title()
     t.text = key.split()[0]
     plt.title = t
@@ -88,12 +86,9 @@ for key, value in word_count.items():
     plt.add_layout(xaxis, 'below')
     plt.xaxis.major_label_orientation = +math.pi/2
     
-    yticklabels = {}
     yaxis = LinearAxis()
-    for i, word in enumerate(words):
-        yticklabels[str(i)] = word.strip().rstrip()
     yaxis.ticker = y
-    yaxis.major_label_overrides = yticklabels
+    yaxis.major_label_overrides = {i : word for i, word in enumerate(words)}
     yaxis.major_label_standoff = -35
     plt.add_layout(yaxis, 'left')
 
@@ -102,13 +97,17 @@ for key, value in word_count.items():
 
     plots.append(plt)
 
-plt = Plot(title=None, plot_width=60, plot_height=400,
-        min_border=0, toolbar_location=None)
+plt = Plot(
+        title            = None, 
+        plot_width       = 60, 
+        plot_height      = 400,
+        min_border       = 0, 
+        toolbar_location = None)
 color_bar = ColorBar(
-            color_mapper=mapper['transform'], 
-            width=8,
-            location=(0,0),
-            ticker=FixedTicker(ticks=np.linspace(0,250,11, dtype=np.int)))
+            color_mapper = mapper['transform'], 
+            width        = 8,
+            location     = (0,0),
+            ticker       = FixedTicker(ticks=np.linspace(0, 250, 11, dtype=np.int)))
 plt.add_layout(color_bar, 'right')
 plots.append(plt)
 
@@ -123,17 +122,28 @@ date_range_slider = DateRangeSlider(
             value  = (data['time'].iloc[0], data['time'].iloc[-1]),
             format = '%d/%m@%H:%M',
             step   = 1,
+            width = 95*(len(plots)-1),
             bar_color='purple')
 
-main_gui = Row(children=[
+play_button = Button(
+        label       = 'Run', 
+        width       = 75,
+        button_type = 'success')
+
+bottom_layout = Row(children=[
+    date_range_slider, 
+    play_button,
+])
+
+main_layout = Row(children=[
     Column(children=[
         grid,
-        date_range_slider,
+        bottom_layout,
     ]),
 ])
 
 doc = Document()
-doc.add_root(main_gui)
+doc.add_root(main_layout)
 
 if __name__ == "__main__":
     doc.validate()
