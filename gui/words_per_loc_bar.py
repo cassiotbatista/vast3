@@ -105,6 +105,7 @@ date_range_slider = DateRangeSlider(
             start  = data['time'].iloc[0],
             end    = data['time'].iloc[-1],
             value  = (data['time'].iloc[1000], data['time'].iloc[-1000]),
+            format = '%d/%m@%H:%M',
             step   = 1)
 
 sliders = Row(children=[
