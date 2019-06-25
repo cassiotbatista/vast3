@@ -46,6 +46,8 @@ sources    = []
 def init_barplots():
     global barplots
     global sources
+    barplots = []
+    sources  = []
     for i in range(len(word_count)):
         src = ColumnDataSource(dict(y=[], right=[],))
         plt = Plot(
@@ -59,6 +61,7 @@ def init_barplots():
 
 def init_wordcount():
     global word_count
+    word_count = {}
     for location in data.location.unique():
         if location.startswith('unk') or location.startswith('<loc'):
             continue
@@ -68,11 +71,13 @@ init_wordcount()
 init_barplots()
 
 def update():
-    date_value = date_range_slider.value_as_datetime
-    data_chunk = data[data.time.between(date_value[0], date_value[1])]
+    init_wordcount()
     global word_count
     global barplots
     global sources
+    date_value = date_range_slider.value_as_datetime
+    data_chunk = data[data.time.between(date_value[0], date_value[1])]
+    print(len(data), len(data_chunk))
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
         if location.startswith('unk') or location.startswith('<loc'):
             continue
@@ -162,7 +167,7 @@ main_layout = Row(children=[
     Column(children=[ grid, bottom_layout, ]),
 ])
 
-date_range_slider.on_change('value', lambda attr, old, new: update())
+play_button.on_click(update)
 
 update()  # initial load of the data
 
