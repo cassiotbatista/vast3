@@ -17,6 +17,7 @@ from bokeh.embed import file_html
 from bokeh.resources import INLINE
 from bokeh.util.browser import view
 
+from bokeh.io import curdoc
 from bokeh.models.layouts import Row, Column
 from bokeh.models.widgets import DateRangeSlider, Button
 from bokeh.models.annotations import Title
@@ -32,53 +33,81 @@ import data_handler
 NUM_WORDS = 10
 MIN_WLEN  = 3
 
-def count_words(data, useful, useless, start_date, end_date):
-    word_count = {}
+data             = data_handler.load_data()
+useful_wordlist  = data_handler.get_useful_words()
+useless_wordlist = data_handler.get_useless_words()
+
+mapper = linear_cmap(field_name='right', palette=Spectral6, low=3, high=234)
+
+word_count = {}
+barplots   = []
+sources    = []
+
+def init_barplots():
+    global barplots
+    global sources
+    for i in range(len(word_count)):
+        src = ColumnDataSource(dict(y=[], right=[],))
+        plt = Plot(
+            title            = None, 
+            plot_width       = 95, 
+            plot_height      = 400,
+            min_border       = 0, 
+            toolbar_location = None)
+        barplots.append(plt)
+        sources.append(src)
+
+def init_wordcount():
+    global word_count
     for location in data.location.unique():
+        if location.startswith('unk') or location.startswith('<loc'):
+            continue
         word_count[location] = {}
-    data = data[data.time.between(start_date, end_date)]
-    for location, tweet in zip(data.location, data.message): 
+
+init_wordcount()
+init_barplots()
+
+def update():
+    date_value = date_range_slider.value_as_datetime
+    data_chunk = data[data.time.between(date_value[0], date_value[1])]
+    global word_count
+    global barplots
+    global sources
+    for location, tweet in zip(data_chunk.location, data_chunk.message): 
+        if location.startswith('unk') or location.startswith('<loc'):
+            continue
         if not isinstance(tweet, str):
             continue
         tweet = re.sub('[#@!?,.;]', ' ', tweet)
         for word in tweet.split():
             if len(word) > MIN_WLEN:
                 word = word[:MIN_WLEN+1]
-                if word in useless:
+                if word in useless_wordlist:
                     continue
                 if word in word_count[location]:
                     word_count[location][word] += 1
                 else:
                     word_count[location][word]  = 1
-    return word_count
 
-def get_barplots(word_count):
-    mapper = linear_cmap(field_name='right', palette=Spectral6, low=3, high=234)
-    plots = []
-    for key, value in word_count.items():
-        if key.startswith('unk') or key.startswith('<loc'): # useless tweets here
-            continue
-        y = np.arange(NUM_WORDS)
-        wordfreqlist = sorted(value.items(), key=lambda kv: kv[1], reverse=True)
+    y = np.arange(NUM_WORDS)
+    for i, (neigh,wcount) in enumerate(word_count.items()):
+        wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
         x = []
         words = []
-        for i, element in enumerate(wordfreqlist[:NUM_WORDS]):
-            word, freq = element
+        for word, freq in wordfreqlist[:NUM_WORDS]:
             x.append(freq)
             words.append(word)
 
-        source = ColumnDataSource(dict(y=y, right=x,))
-        plt = Plot(
-                title            = None, 
-                plot_width       = 95, 
-                plot_height      = 400,
-                min_border       = 0, 
-                toolbar_location = None)
+        plt = barplots[i]
+        src = sources[i]
+        src.data = dict(y=y, right=x)
+
         t = Title()
-        t.text = key.split()[0]
+        t.text = neigh.split()[0]
         plt.title = t
+
         glyph = HBar(y='y', right='right', left=0, height=0.85, fill_color=mapper)
-        plt.add_glyph(source, glyph)
+        plt.add_glyph(src, glyph)
 
         xaxis = LinearAxis()
         xaxis.ticker = np.linspace(0, max(x), 5, dtype=np.int)[1:]
@@ -94,72 +123,47 @@ def get_barplots(word_count):
         plt.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
         plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
-        plots.append(plt)
+    #plt = Plot(
+    #        title            = None, 
+    #        plot_width       = 60, 
+    #        plot_height      = 400,
+    #        min_border       = 0, 
+    #        toolbar_location = None)
+    #color_bar = ColorBar(
+    #            color_mapper = mapper['transform'], 
+    #            width        = 8,
+    #            location     = (0,0),
+    #            ticker       = FixedTicker(ticks=np.linspace(0, 250, 11, dtype=np.int)))
+    #plt.add_layout(color_bar, 'right')
+    #plots.append(plt)
 
-    plt = Plot(
-            title            = None, 
-            plot_width       = 60, 
-            plot_height      = 400,
-            min_border       = 0, 
-            toolbar_location = None)
-    color_bar = ColorBar(
-                color_mapper = mapper['transform'], 
-                width        = 8,
-                location     = (0,0),
-                ticker       = FixedTicker(ticks=np.linspace(0, 250, 11, dtype=np.int)))
-    plt.add_layout(color_bar, 'right')
-    plots.append(plt)
-    return plots
+grid = gridplot([ barplots ])
 
-def draw_layout(data, plots):
-    grid = gridplot([
-        plots,
-    ])
+play_button = Button(
+        label       = 'Run', 
+        width       = 75,
+        button_type = 'success')
 
-    date_range_slider = DateRangeSlider(
-                start  = data['time'].iloc[0],
-                end    = data['time'].iloc[-1],
-                value  = (data['time'].iloc[0], data['time'].iloc[-1]),
-                format = '%d/%m@%H:%M',
-                step   = 1,
-                width = 95*(len(plots)-1),
-                bar_color='purple')
+date_range_slider = DateRangeSlider(
+        start  = data['time'].iloc[0],
+        end    = data['time'].iloc[-1],
+        value  = (data['time'].iloc[0], data['time'].iloc[-1]),
+        format = '%d/%m@%H:%M',
+        step   = 1,
+        width = 95*(len(barplots)-1),
+        bar_color='purple')
 
-    play_button = Button(
-            label       = 'Run', 
-            width       = 75,
-            button_type = 'success')
 
-    bottom_layout = Row(children=[
-        date_range_slider, 
-        play_button,
-    ])
+bottom_layout = Row(children=[
+    date_range_slider, play_button,
+])
 
-    main_layout = Row(children=[
-        Column(children=[
-            grid,
-            bottom_layout,
-        ]),
-    ])
+main_layout = Row(children=[
+    Column(children=[ grid, bottom_layout, ]),
+])
 
-    doc = Document()
-    doc.add_root(main_layout)
-    return doc
+date_range_slider.on_change('value', lambda attr, old, new: update())
 
-if __name__ == "__main__":
-    data_source      = data_handler.load_data()
-    useful_wordlist  = data_handler.get_useful_words()
-    useless_wordlist = data_handler.get_useless_words()
-    
-    word_count = count_words(data_source, useful_wordlist, useless_wordlist,
-                data_source.time.iloc[0], data_source.time.iloc[-1])
+update()  # initial load of the data
 
-    barplots = get_barplots(word_count)
-
-    doc = draw_layout(data_source, barplots)
-
-    doc.validate()
-    filename = "vast-mc3.html"
-    with open(filename, "w") as f:
-        f.write(file_html(doc, INLINE, "vast-mc3"))
-    view(filename)
+curdoc().add_root(main_layout)
