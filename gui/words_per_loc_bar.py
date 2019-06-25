@@ -84,14 +84,9 @@ def init_wordcount():
 init_wordcount()
 init_barplots()
 
-def init_plot():
-    init_wordcount()
-    global word_count
-    global barplots
-    global sources
+def count_words(word_count):
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
-
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
         if location.startswith('unk') or location.startswith('<loc'):
             continue
@@ -107,6 +102,14 @@ def init_plot():
                     word_count[location][word] += 1
                 else:
                     word_count[location][word]  = 1
+
+def init_plot():
+    init_wordcount()
+    global word_count
+    global barplots
+    global sources
+
+    count_words(word_count)
 
     y = np.arange(NUM_WORDS)
     for i, (neigh,wcount) in enumerate(word_count.items()):
@@ -149,24 +152,8 @@ def update():
     global barplots
     global sources
     global mapper
-    date_value = date_range_slider.value_as_datetime
-    data_chunk = data[data.time.between(date_value[0], date_value[1])]
 
-    for location, tweet in zip(data_chunk.location, data_chunk.message): 
-        if location.startswith('unk') or location.startswith('<loc'):
-            continue
-        if not isinstance(tweet, str):
-            continue
-        tweet = re.sub('[#@!?,.;]', ' ', tweet)
-        for word in tweet.split():
-            if len(word) > MIN_WLEN:
-                word = word[:MIN_WLEN+1]
-                if word in useless_wordlist:
-                    continue
-                if word in word_count[location]:
-                    word_count[location][word] += 1
-                else:
-                    word_count[location][word]  = 1
+    count_words(word_count)
 
     y = np.arange(NUM_WORDS)
     for i, (neigh,wcount) in enumerate(word_count.items()):
