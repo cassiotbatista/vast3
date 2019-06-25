@@ -8,9 +8,9 @@ import os
 import re
 
 import math
-
 import pandas as pd
 import numpy as np
+from collections import OrderedDict
 
 from bokeh.document import Document
 from bokeh.embed import file_html
@@ -39,7 +39,7 @@ useless_wordlist = data_handler.get_useless_words()
 
 mapper = linear_cmap(field_name='right', palette=Spectral6, low=3, high=234)
 
-word_count = {}
+word_count = OrderedDict()
 barplots   = []
 sources    = []
 
@@ -74,7 +74,7 @@ def init_barplots():
 
 def init_wordcount():
     global word_count
-    word_count = {}
+    word_count = OrderedDict()
     for location in data.location.unique():
         if location.startswith('unk') or location.startswith('<loc'):
             continue
