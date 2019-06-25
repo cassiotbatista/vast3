@@ -178,12 +178,13 @@ def update():
         src = sources[i]
         src.data = dict(y=y, right=x)
 
-        plt.xaxis.ticker = np.linspace(0, max(x), 5, dtype=np.int)[1:]
-        plt.xaxis.major_label_orientation = +math.pi/2
+        steps = 5
+        if max(x) < steps:
+            steps = max(x)
+        plt.xaxis.ticker = np.linspace(0, max(x), steps, dtype=np.int)[1:]
         
         plt.yaxis.ticker = y
         plt.yaxis.major_label_overrides = { i : word for i, word in enumerate(words) }
-        plt.yaxis.major_label_standoff = -35
 
 grid = gridplot([ barplots ])
 
