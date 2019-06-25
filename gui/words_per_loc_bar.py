@@ -194,11 +194,6 @@ def update():
 
 grid = gridplot([ barplots ])
 
-play_button = Button(
-        label       = 'Run', 
-        width       = 75,
-        button_type = 'success')
-
 date_range_slider = DateRangeSlider(
         start  = data['time'].iloc[0],
         end    = data['time'].iloc[-1],
@@ -207,6 +202,11 @@ date_range_slider = DateRangeSlider(
         step   = 1,
         width = 95*(len(barplots)-1),
         bar_color='purple')
+
+play_button = Button(
+        label       = 'Run', 
+        width       = 75,
+        button_type = 'success')
 
 bottom_layout = Row(children=[
     date_range_slider, play_button,
