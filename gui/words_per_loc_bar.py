@@ -148,7 +148,7 @@ def update():
     global sources
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
-    print(len(data), len(data_chunk))
+
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
         if location.startswith('unk') or location.startswith('<loc'):
             continue
