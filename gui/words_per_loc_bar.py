@@ -38,10 +38,16 @@ useful_wordlist  = data_handler.get_useful_words()
 useless_wordlist = data_handler.get_useless_words()
 
 mapper = linear_cmap(field_name='right', palette=Spectral6, low=3, high=234)
+color_bar = ColorBar(
+        color_mapper = mapper['transform'], 
+        width        = 8,
+        location     = (0,0),
+        ticker       = FixedTicker(ticks=np.linspace(0, 250, 11, dtype=np.int)))
 
 word_count = OrderedDict()
 barplots   = []
 sources    = []
+hbarglyphs = []
 
 def init_barplots():
     global barplots
@@ -64,11 +70,6 @@ def init_barplots():
             plot_height      = 400,
             min_border       = 0, 
             toolbar_location = None)
-    color_bar = ColorBar(
-                color_mapper = mapper['transform'], 
-                width        = 8,
-                location     = (0,0),
-                ticker       = FixedTicker(ticks=np.linspace(0, 250, 11, dtype=np.int)))
     plt.add_layout(color_bar, 'right')
     barplots.append(plt)
 
@@ -125,6 +126,7 @@ def init_plot():
         plt.title = t
 
         glyph = HBar(y='y', right='right', left=0, height=0.85, fill_color=mapper)
+        hbarglyphs.append(glyph)
         plt.add_glyph(src, glyph)
 
         xaxis = LinearAxis()
@@ -146,6 +148,7 @@ def update():
     global word_count
     global barplots
     global sources
+    global mapper
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
 
@@ -174,16 +177,20 @@ def update():
             x.append(freq)
             words.append(word)
 
+        mapper['transform'].high = 50
+
         plt = barplots[i]
         src = sources[i]
+        glyph = hbarglyphs[i]
+
         src.data = dict(y=y, right=x)
+        glyph.update(fill_color=mapper)
 
         steps = 5
         if max(x) < steps:
             steps = max(x)
         plt.xaxis.ticker = np.linspace(0, max(x), steps, dtype=np.int)[1:]
         
-        plt.yaxis.ticker = y
         plt.yaxis.major_label_overrides = { i : word for i, word in enumerate(words) }
 
 grid = gridplot([ barplots ])
