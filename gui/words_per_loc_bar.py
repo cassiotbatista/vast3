@@ -90,7 +90,7 @@ def init_plot():
     global sources
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
-    print(len(data), len(data_chunk))
+
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
         if location.startswith('unk') or location.startswith('<loc'):
             continue
@@ -178,19 +178,12 @@ def update():
         src = sources[i]
         src.data = dict(y=y, right=x)
 
-        xaxis = LinearAxis()
-        xaxis.ticker = np.linspace(0, max(x), 5, dtype=np.int)[1:]
-        plt.add_layout(xaxis, 'below')
+        plt.xaxis.ticker = np.linspace(0, max(x), 5, dtype=np.int)[1:]
         plt.xaxis.major_label_orientation = +math.pi/2
         
-        yaxis = LinearAxis()
-        yaxis.ticker = y
-        yaxis.major_label_overrides = { i : word for i, word in enumerate(words) }
-        yaxis.major_label_standoff = -35
-        plt.add_layout(yaxis, 'left')
-
-        plt.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
-        plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
+        plt.yaxis.ticker = y
+        plt.yaxis.major_label_overrides = { i : word for i, word in enumerate(words) }
+        plt.yaxis.major_label_standoff = -35
 
 grid = gridplot([ barplots ])
 
