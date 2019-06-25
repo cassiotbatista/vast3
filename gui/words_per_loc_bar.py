@@ -58,6 +58,19 @@ def init_barplots():
             toolbar_location = None)
         barplots.append(plt)
         sources.append(src)
+    plt = Plot(
+            title            = None, 
+            plot_width       = 60, 
+            plot_height      = 400,
+            min_border       = 0, 
+            toolbar_location = None)
+    color_bar = ColorBar(
+                color_mapper = mapper['transform'], 
+                width        = 8,
+                location     = (0,0),
+                ticker       = FixedTicker(ticks=np.linspace(0, 250, 11, dtype=np.int)))
+    plt.add_layout(color_bar, 'right')
+    barplots.append(plt)
 
 def init_wordcount():
     global word_count
@@ -70,7 +83,7 @@ def init_wordcount():
 init_wordcount()
 init_barplots()
 
-def update():
+def init_plot():
     init_wordcount()
     global word_count
     global barplots
@@ -128,19 +141,56 @@ def update():
         plt.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
         plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
-    #plt = Plot(
-    #        title            = None, 
-    #        plot_width       = 60, 
-    #        plot_height      = 400,
-    #        min_border       = 0, 
-    #        toolbar_location = None)
-    #color_bar = ColorBar(
-    #            color_mapper = mapper['transform'], 
-    #            width        = 8,
-    #            location     = (0,0),
-    #            ticker       = FixedTicker(ticks=np.linspace(0, 250, 11, dtype=np.int)))
-    #plt.add_layout(color_bar, 'right')
-    #plots.append(plt)
+def update():
+    init_wordcount()
+    global word_count
+    global barplots
+    global sources
+    date_value = date_range_slider.value_as_datetime
+    data_chunk = data[data.time.between(date_value[0], date_value[1])]
+    print(len(data), len(data_chunk))
+    for location, tweet in zip(data_chunk.location, data_chunk.message): 
+        if location.startswith('unk') or location.startswith('<loc'):
+            continue
+        if not isinstance(tweet, str):
+            continue
+        tweet = re.sub('[#@!?,.;]', ' ', tweet)
+        for word in tweet.split():
+            if len(word) > MIN_WLEN:
+                word = word[:MIN_WLEN+1]
+                if word in useless_wordlist:
+                    continue
+                if word in word_count[location]:
+                    word_count[location][word] += 1
+                else:
+                    word_count[location][word]  = 1
+
+    y = np.arange(NUM_WORDS)
+    for i, (neigh,wcount) in enumerate(word_count.items()):
+        wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
+        x = []
+        words = []
+        for word, freq in wordfreqlist[:NUM_WORDS]:
+            x.append(freq)
+            words.append(word)
+
+        plt = barplots[i]
+        src = sources[i]
+        src.data = dict(y=y, right=x)
+
+        xaxis = LinearAxis()
+        xaxis.ticker = np.linspace(0, max(x), 5, dtype=np.int)[1:]
+        plt.add_layout(xaxis, 'below')
+        plt.xaxis.major_label_orientation = +math.pi/2
+        
+        yaxis = LinearAxis()
+        yaxis.ticker = y
+        yaxis.major_label_overrides = { i : word for i, word in enumerate(words) }
+        yaxis.major_label_standoff = -35
+        plt.add_layout(yaxis, 'left')
+
+        plt.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
+        plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
 grid = gridplot([ barplots ])
 
@@ -158,7 +208,6 @@ date_range_slider = DateRangeSlider(
         width = 95*(len(barplots)-1),
         bar_color='purple')
 
-
 bottom_layout = Row(children=[
     date_range_slider, play_button,
 ])
@@ -169,6 +218,6 @@ main_layout = Row(children=[
 
 play_button.on_click(update)
 
-update()  # initial load of the data
+init_plot()  # initial load of the data
 
 curdoc().add_root(main_layout)
