@@ -101,3 +101,9 @@ good: 0
 grea: 0
 shou: 0
 tomorrow!:  0
+back: 0
+peop: 0
+here: 0
+give: 0
+noth: 0
+last: 0 
