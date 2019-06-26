@@ -14,7 +14,6 @@ from collections import OrderedDict
 
 from bokeh.document import Document
 from bokeh.embed import file_html
-from bokeh.resources import INLINE
 from bokeh.util.browser import view
 
 from bokeh.io import curdoc
@@ -22,7 +21,7 @@ from bokeh.models.layouts import Row, Column
 from bokeh.models.widgets import DateRangeSlider, Button
 from bokeh.models.annotations import Title
 from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, LabelSet, Label, ColorBar, FixedTicker
-from bokeh.models.glyphs import HBar
+from bokeh.models.glyphs import HBar, VBar
 from bokeh.layouts import gridplot
 
 from bokeh.palettes import Spectral6
@@ -43,16 +42,28 @@ color_bar = ColorBar(
         width        = 8,
         location     = (0,0))
 
-word_count = OrderedDict()
-barplots   = []
-sources    = []
-hbarglyphs = []
+word_count    = OrderedDict()
+user_count    = OrderedDict()
+mention_count = OrderedDict()
 
-def init_barplots():
-    global barplots
-    global sources
-    barplots = []
-    sources  = []
+word_barplots   = []
+word_sources    = []
+word_hbarglyphs = []
+
+user_barplot = Plot(
+        title            = None,
+        plot_width       = 700, 
+        plot_height      = 500,
+        min_border       = 0, 
+        toolbar_location = None)
+user_sources    = []
+user_hbarglyphs = []
+
+def init_word_barplots():
+    global word_barplots
+    global word_sources
+    word_barplots = []
+    word_sources  = []
     for i in range(len(word_count)):
         src = ColumnDataSource(dict(y=[], right=[],))
         plt = Plot(
@@ -61,8 +72,8 @@ def init_barplots():
             plot_height      = 400,
             min_border       = 0, 
             toolbar_location = None)
-        barplots.append(plt)
-        sources.append(src)
+        word_barplots.append(plt)
+        word_sources.append(src)
     plt = Plot(
             title            = None, 
             plot_width       = 60, 
@@ -70,7 +81,7 @@ def init_barplots():
             min_border       = 0, 
             toolbar_location = None)
     plt.add_layout(color_bar, 'right')
-    barplots.append(plt)
+    word_barplots.append(plt)
 
 def init_wordcount():
     global word_count
@@ -81,7 +92,7 @@ def init_wordcount():
         word_count[location] = {}
 
 init_wordcount()
-init_barplots()
+init_word_barplots()
 
 def count_words(word_count):
     date_value = date_range_slider.value_as_datetime
@@ -102,6 +113,11 @@ def count_words(word_count):
                 else:
                     word_count[location][word]  = 1
 
+def count_users():
+    user_count = data.account.value_counts()
+    user_count = user_count[user_count.between(30, user_count.max())]
+    return user_count.to_dict(into=OrderedDict)
+
 def get_freq_range(word_count):
     frequencies = []
     for wordcountdict in word_count.values():
@@ -111,12 +127,42 @@ def get_freq_range(word_count):
             frequencies.append(freq)
     return min(frequencies), max(frequencies)
 
+def init_user_plot():
+    global user_count
+    global user_barplot
+    user_count = count_users()
+    y = []
+    users = []
+    for (user, freq) in user_count.items():
+        y.append(freq)
+        users.append(user)
+    x = np.arange(len(users))
+    source = ColumnDataSource(dict(x=x, top=y,))
+    glyph = VBar(x='x', top='top', bottom=0, width=0.85, fill_color='#1f77b4')
+    user_barplot.add_glyph(source, glyph)
+
+    xaxis = LinearAxis()
+    xaxis.ticker = x
+    xaxis.major_label_overrides = { i : '@' + user for i, user in enumerate(users) }
+    #xaxis.major_label_standoff = -35
+    user_barplot.add_layout(xaxis, 'below')
+    user_barplot.xaxis.major_label_orientation = +math.pi/2
+
+    yaxis = LinearAxis()
+    yaxis.ticker = np.linspace(0, max(y), 11, dtype=np.int)[1:]
+    user_barplot.add_layout(yaxis, 'left')
+    
+    user_barplot.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
+    user_barplot.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
+
 def init_plot():
     init_wordcount()
     global word_count
-    global barplots
-    global sources
+    global word_barplots
+    global word_sources
     global mapper
+
+    init_user_plot()
 
     count_words(word_count)
 
@@ -141,8 +187,8 @@ def init_plot():
             x.append(freq)
             words.append(word)
 
-        plt = barplots[i]
-        src = sources[i]
+        plt = word_barplots[i]
+        src = word_sources[i]
         src.data = dict(y=y, right=x)
 
         t = Title()
@@ -150,7 +196,7 @@ def init_plot():
         plt.title = t
 
         glyph = HBar(y='y', right='right', left=0, height=0.85, fill_color=mapper)
-        hbarglyphs.append(glyph)
+        word_hbarglyphs.append(glyph)
         plt.add_glyph(src, glyph)
 
         xaxis = LinearAxis()
@@ -170,8 +216,8 @@ def init_plot():
 def update():
     init_wordcount()
     global word_count
-    global barplots
-    global sources
+    global word_barplots
+    global word_sources
     global mapper
     global color_bar
 
@@ -198,9 +244,9 @@ def update():
             x.append(freq)
             words.append(word)
 
-        plt = barplots[i]
-        src = sources[i]
-        glyph = hbarglyphs[i]
+        plt = word_barplots[i]
+        src = word_sources[i]
+        glyph = word_hbarglyphs[i]
 
         src.data = dict(y=y, right=x)
         glyph.update(fill_color=mapper)
@@ -212,7 +258,7 @@ def update():
         
         plt.yaxis.major_label_overrides = { i : word for i, word in enumerate(words) }
 
-grid = gridplot([ barplots ])
+grid = gridplot([ word_barplots ])
 
 date_range_slider = DateRangeSlider(
         start  = data['time'].iloc[0],
@@ -220,23 +266,26 @@ date_range_slider = DateRangeSlider(
         value  = (data['time'].iloc[0], data['time'].iloc[-1]),
         format = '%d/%m@%H:%M',
         step   = 1,
-        width = 95*(len(barplots)-1),
+        width = 95*(len(word_barplots)-1),
         bar_color='purple')
 
 play_button = Button(
         label       = 'Run', 
         width       = 75,
         button_type = 'success')
+play_button.on_click(update)
 
 bottom_layout = Row(children=[
     date_range_slider, play_button,
 ])
 
 main_layout = Row(children=[
-    Column(children=[ grid, bottom_layout, ]),
+    Column(children=[ 
+        grid, 
+        bottom_layout, 
+        user_barplot, 
+    ]),
 ])
-
-play_button.on_click(update)
 
 init_plot()  # initial load of the data
 
