@@ -37,12 +37,11 @@ data             = data_handler.load_data()
 useful_wordlist  = data_handler.get_useful_words()
 useless_wordlist = data_handler.get_useless_words()
 
-mapper = linear_cmap(field_name='right', palette=Spectral6, low=3, high=234)
+mapper = linear_cmap(field_name='right', palette=Spectral6, low=0, high=1)
 color_bar = ColorBar(
         color_mapper = mapper['transform'], 
         width        = 8,
-        location     = (0,0),
-        ticker       = FixedTicker(ticks=np.linspace(0, 250, 11, dtype=np.int)))
+        location     = (0,0))
 
 word_count = OrderedDict()
 barplots   = []
@@ -103,13 +102,35 @@ def count_words(word_count):
                 else:
                     word_count[location][word]  = 1
 
+def get_freq_range(word_count):
+    frequencies = []
+    for wordcountdict in word_count.values():
+        wordfreqlist = sorted(wordcountdict.items(), 
+                    key=lambda kv: kv[1], reverse=True)
+        for word, freq in wordfreqlist[:NUM_WORDS]:
+            frequencies.append(freq)
+    return min(frequencies), max(frequencies)
+
 def init_plot():
     init_wordcount()
     global word_count
     global barplots
     global sources
+    global mapper
 
     count_words(word_count)
+
+    # update colorbar
+    min_freq, max_freq = get_freq_range(word_count)
+    mapper['transform'].low  = min_freq
+    mapper['transform'].high = max_freq
+
+    # update colorbar tickers
+    steps = 11
+    if max_freq < steps:
+        steps = max_freq
+    color_bar.ticker = FixedTicker(ticks=np.linspace(min_freq, 
+                    max_freq, steps, dtype=np.int))
 
     y = np.arange(NUM_WORDS)
     for i, (neigh,wcount) in enumerate(word_count.items()):
@@ -152,8 +173,21 @@ def update():
     global barplots
     global sources
     global mapper
+    global color_bar
 
     count_words(word_count)
+
+    # update mapper
+    min_freq, max_freq = get_freq_range(word_count)
+    mapper['transform'].low  = min_freq
+    mapper['transform'].high = max_freq
+
+    # update colorbar tickers
+    steps = 11
+    if max_freq < steps:
+        steps = max_freq
+    color_bar.ticker = FixedTicker(ticks=np.linspace(min_freq, 
+                    max_freq, steps, dtype=np.int))
 
     y = np.arange(NUM_WORDS)
     for i, (neigh,wcount) in enumerate(word_count.items()):
@@ -163,8 +197,6 @@ def update():
         for word, freq in wordfreqlist[:NUM_WORDS]:
             x.append(freq)
             words.append(word)
-
-        mapper['transform'].high = 50
 
         plt = barplots[i]
         src = sources[i]
