@@ -146,7 +146,7 @@ def init_plot():
         src.data = dict(y=y, right=x)
 
         t = Title()
-        t.text = neigh.split()[0]
+        t.text = neigh[:13]
         plt.title = t
 
         glyph = HBar(y='y', right='right', left=0, height=0.85, fill_color=mapper)
