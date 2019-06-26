@@ -56,8 +56,13 @@ user_barplot = Plot(
         plot_height      = 500,
         min_border       = 0, 
         toolbar_location = None)
-user_sources    = []
-user_hbarglyphs = []
+
+mention_barplot = Plot(
+        title            = None,
+        plot_width       = 700, 
+        plot_height      = 500,
+        min_border       = 0, 
+        toolbar_location = None)
 
 def init_word_barplots():
     global word_barplots
@@ -118,6 +123,11 @@ def count_users():
     user_count = user_count[user_count.between(30, user_count.max())]
     return user_count.to_dict(into=OrderedDict)
 
+def count_mentions():
+    mention_count = data.account.value_counts()
+    mention_count = mention_count[mention_count.between(30, mention_count.max())]
+    return user_count.to_dict(into=OrderedDict)
+
 def get_freq_range(word_count):
     frequencies = []
     for wordcountdict in word_count.values():
@@ -143,17 +153,49 @@ def init_user_plot():
 
     xaxis = LinearAxis()
     xaxis.ticker = x
-    xaxis.major_label_overrides = { i : '@' + user for i, user in enumerate(users) }
+    xaxis.major_label_overrides = {i : '@'+user for i, user in enumerate(users)}
     #xaxis.major_label_standoff = -35
     user_barplot.add_layout(xaxis, 'below')
     user_barplot.xaxis.major_label_orientation = +math.pi/2
 
     yaxis = LinearAxis()
+    yaxis.axis_label='Overall number of tweets per @'
+    yaxis.axis_label_text_font_size = '14pt'
     yaxis.ticker = np.linspace(0, max(y), 11, dtype=np.int)[1:]
     user_barplot.add_layout(yaxis, 'left')
     
     user_barplot.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
     user_barplot.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
+
+def init_mention_plot():
+    global mention_count
+    global mention_barplot
+    mention_count = count_mentions()
+    y = []
+    mentions = []
+    for (mention, freq) in mention_count.items():
+        y.append(freq)
+        mentions.append(mention)
+    x = np.arange(len(mentions))
+    source = ColumnDataSource(dict(x=x, top=y,))
+    glyph = VBar(x='x', top='top', bottom=0, width=0.85, fill_color='#1f77b4')
+    mention_barplot.add_glyph(source, glyph)
+
+    xaxis = LinearAxis()
+    xaxis.ticker = x
+    xaxis.major_label_overrides = {i : '@'+mention for i, mention in enumerate(mentions)}
+    #xaxis.major_label_standoff = -35
+    mention_barplot.add_layout(xaxis, 'below')
+    mention_barplot.xaxis.major_label_orientation = +math.pi/2
+
+    yaxis = LinearAxis()
+    yaxis.axis_label='Overall number of tweets per @'
+    yaxis.axis_label_text_font_size = '14pt'
+    yaxis.ticker = np.linspace(0, max(y), 11, dtype=np.int)[1:]
+    mention_barplot.add_layout(yaxis, 'left')
+    
+    mention_barplot.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
+    mention_barplot.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
 def init_plot():
     init_wordcount()
