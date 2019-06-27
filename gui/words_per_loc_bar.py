@@ -11,7 +11,8 @@ import math
 import pandas as pd
 import numpy as np
 from collections import OrderedDict
-
+from nltk.stem import WordNetLemmatizer 
+  
 from bokeh.document import Document
 from bokeh.embed import file_html
 from bokeh.util.browser import view
@@ -41,6 +42,8 @@ color_bar = ColorBar(
         color_mapper = mapper['transform'], 
         width        = 8,
         location     = (0,0))
+
+lemmatizer = WordNetLemmatizer() 
 
 prefix_count     = OrderedDict()
 wword_count      = OrderedDict()
@@ -104,6 +107,7 @@ init_wordcount()
 init_word_barplots()
 
 def count_words(prefix_count, wword_count):
+    print('counting words: replacing chars and lemmatizing (this step might take a while...')
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
@@ -116,6 +120,9 @@ def count_words(prefix_count, wword_count):
             if word.startswith('@') or word.count(':') > 1:
                 continue
             word = re.sub(r'([iauhy])\1+', r'\1', word)
+            word = re.sub('[:]', '', word)
+            word = lemmatizer.lemmatize(word, pos='n')
+            word = lemmatizer.lemmatize(word, pos='v')
             if len(word) > MIN_WLEN:
                 prefix = word[:MIN_WLEN+1]
                 if prefix in useless_wordlist:
@@ -130,6 +137,7 @@ def count_words(prefix_count, wword_count):
                     wword_count[prefix][word] += 1
                 else:
                     wword_count[prefix][word]  = 1
+    print('done!')
 
 def count_users():
     user_count = data.account.value_counts()
@@ -250,8 +258,9 @@ def init_plot():
         for prefix, freq in wordfreqlist[:NUM_WORDS]:
             x.append(freq)
             prefixes.append(prefix)
-            wlist.append(sorted(wword_count[prefix].items(), 
-                    key=lambda kv:kv[1], reverse=True)[:5])
+            wlist.append([' %s:%d' % (k,v) \
+                        for (k,v) in sorted(wword_count[prefix].items(), 
+                                key=lambda kv:kv[1], reverse=True)[:5]])
 
         plt = word_barplots[i]
         src = word_sources[i]
@@ -306,13 +315,14 @@ def update():
     for i, (neigh,wcount) in enumerate(prefix_count.items()):
         wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
         x = []
-        words = []
+        prefixes = []
         wlist = []
-        for word, freq in wordfreqlist[:NUM_WORDS]:
+        for prefix, freq in wordfreqlist[:NUM_WORDS]:
             x.append(freq)
-            words.append(word)
-            wlist.append(sorted(wword_count[prefix].items(), 
-                    key=lambda kv:kv[1], reverse=True)[:5])
+            prefixes.append(prefix)
+            wlist.append([' %s:%d' % (k,v) \
+                        for (k,v) in sorted(wword_count[prefix].items(), 
+                                key=lambda kv:kv[1], reverse=True)[:5]])
 
         plt = word_barplots[i]
         src = word_sources[i]
@@ -326,7 +336,7 @@ def update():
             steps = max(x)
         plt.xaxis.ticker = np.linspace(0, max(x), steps, dtype=np.int)[1:]
         
-        plt.yaxis.major_label_overrides = { i : word for i, word in enumerate(words) }
+        plt.yaxis.major_label_overrides = { i : prefix for i, prefix in enumerate(prefixes) }
 
 grid = gridplot([ word_barplots ])
 
