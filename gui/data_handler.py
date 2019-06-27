@@ -10,6 +10,8 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.max_colwidth', -1)
 pd.set_option('display.max_columns', None) 
 
+from termcolor import cprint
+
 DATA_CSVFILE = '../MC3/data/YInt.csv'
 REPLACE_FILE = '../src/replace.txt'
 USELESS_FILE = '../src/w_useless.txt'
@@ -42,16 +44,16 @@ def get_useful_words():
 
 def preprocess(data):
     mapping_rules = get_replace_rules()
-    print(TAG, 'replacing wrong words')
+    cprint('%s: replacing wrong words' % TAG, 'green', attrs=['bold'])
     for wrong, correct in mapping_rules.items():
         data['message'] = data['message'].str.replace(wrong, correct)
-    print(TAG, 'lowercasing text cols')
+    cprint('%s: lowercasing text cols' % TAG, 'green', attrs=['bold'])
     for col in data.columns:
         if col != 'time':
             data[col] = data[col].str.lower()
     return data
 
 def load_data():
-    print(TAG, 'loading data')
+    cprint('%s: loading data' % TAG, 'green', attrs=['bold'])
     data = pd.read_csv(DATA_CSVFILE, parse_dates=['time'])
     return preprocess(data)

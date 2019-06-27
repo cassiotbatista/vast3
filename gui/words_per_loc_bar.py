@@ -28,7 +28,11 @@ from bokeh.layouts import gridplot
 from bokeh.palettes import Spectral6
 from bokeh.transform import linear_cmap
 
+from termcolor import cprint
+
 import data_handler 
+
+TAG = 'VASTGUI'
 
 NUM_WORDS = 10
 MIN_WLEN  = 3
@@ -107,7 +111,9 @@ init_wordcount()
 init_word_barplots()
 
 def count_words(prefix_count, wword_count):
-    print('counting words: replacing chars and lemmatizing (this step might take a while...')
+    cprint('%s: counting words: '
+            'replacing chars and lemmatizing '
+            '(this step might take a while...)' % TAG, 'yellow', attrs=['bold'])
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
@@ -137,14 +143,16 @@ def count_words(prefix_count, wword_count):
                     wword_count[prefix][word] += 1
                 else:
                     wword_count[prefix][word]  = 1
-    print('done!')
+    cprint('done!', 'yellow', attrs=['bold'])
 
 def count_users():
+    cprint('%s: counting @ users...' % TAG, 'yellow', attrs=['bold'])
     user_count = data.account.value_counts()
     user_count = user_count[user_count.between(30, user_count.max())]
     return user_count.to_dict(into=OrderedDict)
 
 def count_mentions():
+    cprint('%s: counting @ mentions...' % TAG, 'yellow', attrs=['bold'])
     mention_count = OrderedDict()
     for tweet in data['message']:
         if isinstance(tweet, str):
@@ -166,6 +174,7 @@ def get_freq_range(prefix_count):
     return min(frequencies), max(frequencies)
 
 def init_user_plot():
+    cprint('%s: init @ users barcharts...' % TAG, 'yellow', attrs=['bold'])
     global user_count
     global user_barplot
     user_count = count_users()
@@ -196,6 +205,7 @@ def init_user_plot():
     user_barplot.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
 def init_mention_plot():
+    cprint('%s: init @ mentios barcharts...' % TAG, 'yellow', attrs=['bold'])
     global mention_count
     global mention_barplot
     mention_count = count_mentions()
@@ -225,6 +235,7 @@ def init_mention_plot():
     mention_barplot.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
 def init_plot():
+    cprint('%s: init barcharts per neighbourhood...' % TAG, 'yellow', attrs=['bold'])
     init_wordcount()
     global prefix_count
     global wword_count
@@ -289,6 +300,7 @@ def init_plot():
         plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
 def update():
+    cprint('%s: update barcharts per neighbourhood...' % TAG, 'yellow', attrs=['bold'])
     init_wordcount()
     global prefix_count
     global wword_count
