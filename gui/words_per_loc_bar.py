@@ -250,8 +250,8 @@ def init_plot():
         for prefix, freq in wordfreqlist[:NUM_WORDS]:
             x.append(freq)
             prefixes.append(prefix)
-            wlist.append(sorted(wword_count[prefix].items(), key=lambda
-                kv:kv[1], reverse=True)[:5])
+            wlist.append(sorted(wword_count[prefix].items(), 
+                    key=lambda kv:kv[1], reverse=True)[:5])
 
         plt = word_barplots[i]
         src = word_sources[i]
@@ -307,15 +307,18 @@ def update():
         wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
         x = []
         words = []
+        wlist = []
         for word, freq in wordfreqlist[:NUM_WORDS]:
             x.append(freq)
             words.append(word)
+            wlist.append(sorted(wword_count[prefix].items(), 
+                    key=lambda kv:kv[1], reverse=True)[:5])
 
         plt = word_barplots[i]
         src = word_sources[i]
         glyph = word_hbarglyphs[i]
 
-        src.data = dict(y=y, right=x)
+        src.data = dict(y=y, right=x, wlist=wlist)
         glyph.update(fill_color=mapper)
 
         steps = 5
