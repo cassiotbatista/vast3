@@ -75,18 +75,18 @@ def init_word_barplots():
         plt = Plot(
             title            = None, 
             plot_width       = 95, 
-            plot_height      = 400,
+            plot_height      = 300,
             min_border       = 0,
-            tools = [HoverTool(tooltips=[
-                    ('wlist', '@wlist'),
-                ])],
+            tools = [HoverTool(tooltips=[('wlist', '@wlist'),], 
+                            point_policy='follow_mouse'
+                )],
             toolbar_location = None)
         word_barplots.append(plt)
         word_sources.append(src)
     plt = Plot(
             title            = None, 
             plot_width       = 60, 
-            plot_height      = 400,
+            plot_height      = 300,
             min_border       = 0, 
             toolbar_location = None)
     plt.add_layout(color_bar, 'right')
@@ -261,7 +261,7 @@ def init_plot():
         t.text = neigh[:13]
         plt.title = t
 
-        glyph = HBar(y='y', right='right', left=0, height=0.85, fill_color=mapper)
+        glyph = HBar(y='y', right='right', left=0, height=0.90, fill_color=mapper)
         word_hbarglyphs.append(glyph)
         plt.add_glyph(src, glyph)
 
