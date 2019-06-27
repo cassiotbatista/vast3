@@ -6,7 +6,7 @@ $ bokeh serve --show <SRC_FILENAME>.py
 ## Requirements
 ```
 $ sudo -H pip3 install --upgrade \
-    bokeh nltk pandas numpy 
+    bokeh nltk pandas numpy termcolor
 ```
 
 ## Reference:
