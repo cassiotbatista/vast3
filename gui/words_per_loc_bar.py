@@ -21,7 +21,7 @@ from bokeh.io import curdoc
 from bokeh.models.layouts import Row, Column
 from bokeh.models.widgets import DateRangeSlider, Button
 from bokeh.models.annotations import Title
-from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, LabelSet, Label, ColorBar, FixedTicker, HoverTool
+from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, LabelSet, Label, ColorBar, FixedTicker, HoverTool, CustomJS
 from bokeh.models.glyphs import HBar, VBar
 from bokeh.layouts import gridplot
 
@@ -226,7 +226,7 @@ def init_user_plot():
 
     wlist = []
     for user in users:
-        prefixes = []
+        prefixes = ['@' + user]
         for prefix, freq in sorted(user_tweet_freq[user].items(), 
                 key=lambda kv: kv[1], reverse=True)[:10]:
             prefixes.append(' %s:%d' % (prefix, freq))
