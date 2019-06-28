@@ -63,6 +63,11 @@ user_barplot = Plot(
         plot_width       = 700, 
         plot_height      = 500,
         min_border       = 0, 
+        tools            = [HoverTool(tooltips=[
+                                    ('wlist', '@wlist'),
+                                ],
+                                point_policy='follow_mouse',
+                            )],
         toolbar_location = None)
 
 mention_barplot = Plot(
@@ -71,6 +76,9 @@ mention_barplot = Plot(
         plot_height      = 500,
         min_border       = 0, 
         toolbar_location = None)
+
+user_tweet_freq    = OrderedDict()
+mention_tweet_freq = OrderedDict()
 
 def init_word_barplots():
     global word_barplots
@@ -84,11 +92,11 @@ def init_word_barplots():
             plot_width       = 95, 
             plot_height      = 300,
             min_border       = 0,
-            tools = [HoverTool(tooltips=[
-                    ('wlist', '@wlist'),
-                ], 
-                point_policy='follow_mouse'
-            )],
+            tools            = [HoverTool(tooltips=[
+                                        ('wlist', '@wlist'),
+                                    ], 
+                                    point_policy='follow_mouse'
+                                )],
             toolbar_location = None)
         word_barplots.append(plt)
         word_sources.append(src)
@@ -152,9 +160,34 @@ def count_words(prefix_count, wword_count):
     cprint('done!', 'yellow', attrs=['bold'])
 
 def count_users():
+    global user_tweet_freq
     cprint('%s: counting @ users...' % TAG, 'yellow', attrs=['bold'])
     user_count = data.account.value_counts()
     user_count = user_count[user_count.between(30, user_count.max())]
+    cprint('%s: counting words tweeted by user: '
+            'replacing chars and lemmatizing '
+            '(this step might take a while...)' % TAG, 
+            'yellow', attrs=['bold', 'blink'])
+    for user, freq in user_count.items():
+        if not user in user_tweet_freq:
+            user_tweet_freq[user] = {}
+        for tweet in data[data.account == user].message:
+            if not isinstance(tweet, str):
+                continue
+            tweet = re.sub('[#!?,.;\-$"\*/\')(><]', ' ', tweet)
+            for word in tweet.split():
+                if word.startswith('@') or word.count(':') > 1:
+                    continue
+                word = re.sub(r'([iauhy])\1+', r'\1', word)
+                word = re.sub('[:]', '', word)
+                word = lemmatizer.lemmatize(word, pos='n') 
+                word = lemmatizer.lemmatize(word, pos='v')
+                if len(word) > MIN_WLEN:
+                    prefix = word[:MIN_WLEN+1]
+                    if not prefix in user_tweet_freq[user]:
+                        user_tweet_freq[user][prefix]  = 1
+                    else:
+                        user_tweet_freq[user][prefix] += 1
     return user_count.to_dict(into=OrderedDict)
 
 def count_mentions():
@@ -190,7 +223,16 @@ def init_user_plot():
         y.append(freq)
         users.append(user)
     x = np.arange(len(users))
-    source = ColumnDataSource(dict(x=x, top=y,))
+
+    wlist = []
+    for user in users:
+        prefixes = []
+        for prefix, freq in sorted(user_tweet_freq[user].items(), 
+                key=lambda kv: kv[1], reverse=True)[:10]:
+            prefixes.append(' %s:%d' % (prefix, freq))
+        wlist.append(list(prefixes))
+
+    source = ColumnDataSource(dict(x=x, top=y, wlist=wlist))
     glyph = VBar(x='x', top='top', bottom=0, width=0.85, fill_color='#1f77b4')
     user_barplot.add_glyph(source, glyph)
 
