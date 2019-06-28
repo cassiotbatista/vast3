@@ -84,9 +84,11 @@ def init_word_barplots():
             plot_width       = 95, 
             plot_height      = 300,
             min_border       = 0,
-            tools = [HoverTool(tooltips=[('wlist', '@wlist'),], 
-                            point_policy='follow_mouse'
-                )],
+            tools = [HoverTool(tooltips=[
+                    ('wlist', '@wlist'),
+                ], 
+                point_policy='follow_mouse'
+            )],
             toolbar_location = None)
         word_barplots.append(plt)
         word_sources.append(src)
@@ -101,11 +103,14 @@ def init_word_barplots():
 
 def init_wordcount():
     global prefix_count
+    global wword_count
     prefix_count = OrderedDict()
+    wword_count  = OrderedDict()
     for location in data.location.unique():
         if location.startswith('unk') or location.startswith('<loc'):
             continue
         prefix_count[location] = {}
+        wword_count[location] = {}
 
 init_wordcount()
 init_word_barplots()
@@ -113,7 +118,8 @@ init_word_barplots()
 def count_words(prefix_count, wword_count):
     cprint('%s: counting words: '
             'replacing chars and lemmatizing '
-            '(this step might take a while...)' % TAG, 'yellow', attrs=['bold'])
+            '(this step might take a while...)' % TAG, 
+            'yellow', attrs=['bold', 'blink'])
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
@@ -127,22 +133,22 @@ def count_words(prefix_count, wword_count):
                 continue
             word = re.sub(r'([iauhy])\1+', r'\1', word)
             word = re.sub('[:]', '', word)
-            word = lemmatizer.lemmatize(word, pos='n')
+            word = lemmatizer.lemmatize(word, pos='n') # TODO move after updating prefix_count?
             word = lemmatizer.lemmatize(word, pos='v')
             if len(word) > MIN_WLEN:
                 prefix = word[:MIN_WLEN+1]
                 if prefix in useless_wordlist:
                     continue
-                if prefix in prefix_count[location]:
-                    prefix_count[location][prefix] += 1
-                else:
+                if not prefix in prefix_count[location]:
                     prefix_count[location][prefix]  = 1
-                if not prefix in wword_count:
-                    wword_count[prefix] = {}
-                if word in wword_count[prefix]:
-                    wword_count[prefix][word] += 1
                 else:
-                    wword_count[prefix][word]  = 1
+                    prefix_count[location][prefix] += 1
+                if not prefix in wword_count[location]:
+                    wword_count[location][prefix] = { word: 1 }
+                elif not word in wword_count[location][prefix]:
+                    wword_count[location][prefix][word]  = 1
+                else:
+                    wword_count[location][prefix][word] += 1
     cprint('done!', 'yellow', attrs=['bold'])
 
 def count_users():
@@ -270,7 +276,7 @@ def init_plot():
             x.append(freq)
             prefixes.append(prefix)
             wlist.append([' %s:%d' % (k,v) \
-                        for (k,v) in sorted(wword_count[prefix].items(), 
+                        for (k,v) in sorted(wword_count[neigh][prefix].items(), 
                                 key=lambda kv:kv[1], reverse=True)[:5]])
 
         plt = word_barplots[i]
@@ -333,7 +339,7 @@ def update():
             x.append(freq)
             prefixes.append(prefix)
             wlist.append([' %s:%d' % (k,v) \
-                        for (k,v) in sorted(wword_count[prefix].items(), 
+                        for (k,v) in sorted(wword_count[neigh][prefix].items(), 
                                 key=lambda kv:kv[1], reverse=True)[:5]])
 
         plt = word_barplots[i]
