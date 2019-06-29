@@ -49,8 +49,8 @@ class SVG:
         return svg
 
     def change_fill_color(self, neigh, html_code):
-        self.svg_struct[neigh]['style'] = re.sub(
-                    'fill:#(.*?);', 'fill:#{};'.format(html_code.lower()), 
+        self.svg_struct[neigh]['style'] = re.sub('fill:#(.*?);', 
+                    'fill:#{};'.format(html_code.lower().strip('#')),
                     self.svg_struct[neigh]['style'])
 
     def update_svg_text(self):
