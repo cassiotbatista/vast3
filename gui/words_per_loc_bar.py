@@ -81,6 +81,7 @@ mention_barplot = Plot(
         toolbar_location = None)
 
 svg = SVG()
+svg.rescale(0.45)
 svg_div    = Div(text=svg.get_text(), width=100, height=100)
 svg_figure = figure(x_range=[], title='St Himark Map', 
         toolbar_location=None, name='map', plot_height=100)
@@ -363,7 +364,6 @@ def init_plot():
         plt.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
         plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
-    svg.rescale(0.4)
     svg.update_svg_text()
     svg_div = Div(text=svg.get_text(), width=100, height=100)
     svg_layout.children.pop()
@@ -441,12 +441,12 @@ bottom_layout = Row(children=[
     date_range_slider, play_button,
 ])
 
-svg_layout = Row(svg_figure)
+svg_layout = Row(svg_figure, width=450)
 svg_layout.children.pop()
 svg_layout.children.append(svg_div)
 
 arroba_layout = Row(children=[
-        svg_layout, #user_barplot, mention_barplot, 
+       svg_layout, user_barplot, mention_barplot, 
     ])
 
 main_layout = Row(children=[
