@@ -82,7 +82,7 @@ mention_barplot = Plot(
 svg = SVG()
 svg.rescale(0.45)
 svg_div    = Div(text=svg.get_text(), width=100, height=100)
-svg_figure = figure(x_range=[], title='St Himark Map', 
+svg_figure = figure(x_range=[], title='St Himark Map', title_location='below',
         toolbar_location=None, name='map', plot_height=100)
 
 user_tweet_freq    = OrderedDict()
@@ -300,7 +300,6 @@ def init_plot():
     global mapper
 
     global svg_div
-    global svg_figure
 
     init_user_plot()
     init_mention_plot()
