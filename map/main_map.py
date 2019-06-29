@@ -7,23 +7,19 @@ from bokeh.plotting import figure
 from bokeh.palettes import Spectral6
 from bokeh.models import Range1d, PanTool, ResetTool, HoverTool, WheelZoomTool
 
+import re
+from termcolor import cprint
+
 from svg import SVG
 
 svg = SVG()
-counter = 0
-
 def file_callback():
-    global counter
-    with open('../MC3/maps/mapa_vast_vetorizado.svg') as f:
-        raw = f.read()
-    if counter % 2:
-        notif = Div(text=raw, width=550, height=500)
-    else:
-        notif = notification
-    counter += 1
+    svg.svg_struct['oldtown']['style'] = re.sub('fill:#(.*?);', 
+                    'fill:#ff0000;', svg.svg_struct['oldtown']['style'])
+    notification = Div(text=svg.join_attrs(svg.svg_struct), width=550, height=500)
     layout = curdoc().get_model_by_name('mainLayout')
     layout.children.pop()
-    layout.children.append(notif)
+    layout.children.append(notification)
 
 button_2 = Button(label="vai caralho")
 button_2.on_click(file_callback)
