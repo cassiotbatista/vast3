@@ -53,6 +53,16 @@ class SVG:
                     'fill:#{};'.format(html_code.lower().strip('#')),
                     self.svg_struct[neigh]['style'])
 
+    def rescale(self, factor):
+        if not isinstance(factor, float) or factor < 0 or factor > 1:
+            print('it is wrong')
+        meta_width  = self.metadata['width']
+        meta_height = self.metadata['height']
+        new_width  = float(re.search('^(.*?)mm$', meta_width).groups()[0])  * factor
+        new_height = float(re.search('^(.*?)mm$', meta_height).groups()[0]) * factor
+        self.metadata['width']  = '%.5fmm' % new_width
+        self.metadata['height'] = '%.5fmm' % new_height
+
     def update_svg_text(self):
         self.svg_text = self.join_attrs(self.svg_struct)
 
