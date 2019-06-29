@@ -35,15 +35,15 @@ class SVG:
             print('there\'s something really wrong around here')
         svg = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' + '\n'
         svg += '<svg' + '\n'
-        for key, value in self.metadata:
+        for key, value in self.metadata.items():
             svg += '    %s="%s"' % (key, value) + '\n'
-        svg += '>' # TODO rstrip()
-        svg += '  <g>' # FIXME I'm losing metadata here
+        svg = svg.rstrip() + '>' + '\n' 
+        svg += '    <g>' + '\n' # FIXME I'm losing metadata here
         for identifier in svg_structure:
-            svg += '    <path id="%s"' % identifier + '\n'
+            svg += '        <path id="%s"' % identifier + '\n'
             for key, value in svg_structure[identifier].items():
-                svg += '        %s="%s"' % (key, value) + '\n'
-            svg += '    />' # TODO rstrip()
-        svg += '  </g>'
+                svg += '            %s="%s"' % (key, value) + '\n'
+            svg = svg.rstrip() + '/>' + '\n' 
+        svg += '    </g>' + '\n'
         svg += '</svg>'
         return svg
