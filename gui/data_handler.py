@@ -12,15 +12,13 @@ pd.set_option('display.max_columns', None)
 
 from termcolor import cprint
 
-DATA_CSVFILE = '../MC3/data/YInt.csv'
-REPLACE_FILE = '../src/replace.txt'
-USELESS_FILE = '../src/w_useless.txt'
-USEFUL_FILE  = '../src/w_useful.txt'
+import config
+
 TAG = 'DH'
 
 def get_replace_rules():
     rules = {}
-    with open(REPLACE_FILE) as f:
+    with open(config.REPLACE_FILE) as f:
         for line in f:
             key, value = line.split()
             rules[key] = value
@@ -28,7 +26,7 @@ def get_replace_rules():
 
 def get_useless_words():
     wordlist = []
-    with open(USELESS_FILE) as f:
+    with open(config.USELESS_FILE) as f:
         for line in f:
             word, freq = line.split(':')
             wordlist.append(word)
@@ -36,7 +34,7 @@ def get_useless_words():
 
 def get_useful_words():
     wordlist = []
-    with open(USEFUL_FILE) as f:
+    with open(config.USEFUL_FILE) as f:
         for line in f:
             word, freq = line.split(':')
             wordlist.append(word)
@@ -55,5 +53,5 @@ def preprocess(data):
 
 def load_data():
     cprint('%s: loading data' % TAG, 'green', attrs=['bold'])
-    data = pd.read_csv(DATA_CSVFILE, parse_dates=['time'])
+    data = pd.read_csv(config.DATA_CSVFILE, parse_dates=['time'])
     return preprocess(data)
