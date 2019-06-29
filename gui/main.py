@@ -7,11 +7,12 @@ import sys
 import os
 import re
 
-import math
 import pandas as pd
 import numpy as np
+
 from collections import OrderedDict
 from nltk.stem import WordNetLemmatizer 
+from termcolor import cprint
 from sklearn.preprocessing import minmax_scale
   
 from bokeh.document import Document
@@ -29,8 +30,6 @@ from bokeh.plotting import figure
 
 from bokeh.palettes import Spectral6
 from bokeh.transform import linear_cmap
-
-from termcolor import cprint
 
 import data_handler 
 from svg import SVG
@@ -250,7 +249,7 @@ def init_user_plot():
     xaxis.major_label_overrides = {i : '@'+user for i, user in enumerate(users)}
     #xaxis.major_label_standoff = -35
     user_barplot.add_layout(xaxis, 'below')
-    user_barplot.xaxis.major_label_orientation = +math.pi/2
+    user_barplot.xaxis.major_label_orientation = +np.pi/2
 
     yaxis = LinearAxis()
     yaxis.axis_label='Overall number of tweets per @'
@@ -280,7 +279,7 @@ def init_mention_plot():
     xaxis.ticker = x
     xaxis.major_label_overrides = {i : mention for i, mention in enumerate(mentions)}
     mention_barplot.add_layout(xaxis, 'below')
-    mention_barplot.xaxis.major_label_orientation = +math.pi/2
+    mention_barplot.xaxis.major_label_orientation = +np.pi/2
 
     yaxis = LinearAxis()
     yaxis.axis_label='Overall number of @ mentions' 
@@ -353,7 +352,7 @@ def init_plot():
         xaxis = LinearAxis()
         xaxis.ticker = np.linspace(0, max(x), 5, dtype=np.int)[1:]
         plt.add_layout(xaxis, 'below')
-        plt.xaxis.major_label_orientation = +math.pi/2
+        plt.xaxis.major_label_orientation = +np.pi/2
         
         yaxis = LinearAxis()
         yaxis.ticker = y
