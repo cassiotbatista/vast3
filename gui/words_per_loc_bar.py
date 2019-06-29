@@ -336,10 +336,6 @@ def init_plot():
                         feature_range=(0,5))[0])
         map_fill_color = mapper['transform'].palette[np.int(color_index)]
         svg.change_fill_color(neigh.replace(' ',''), map_fill_color)
-        svg.update_svg_text()
-        svg_div = Div(text=svg.get_text(), width=100, height=100)
-        svg_layout.children.pop()
-        svg_layout.children.append(svg_div)
 
         plt = word_barplots[i]
         src = word_sources[i]
@@ -366,6 +362,12 @@ def init_plot():
 
         plt.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
         plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
+
+    svg.rescale(0.4)
+    svg.update_svg_text()
+    svg_div = Div(text=svg.get_text(), width=100, height=100)
+    svg_layout.children.pop()
+    svg_layout.children.append(svg_div)
 
 def update():
     cprint('%s: update barcharts per neighbourhood...' % TAG, 'yellow', attrs=['bold'])
