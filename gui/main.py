@@ -31,13 +31,11 @@ from bokeh.plotting import figure
 from bokeh.palettes import Spectral6
 from bokeh.transform import linear_cmap
 
+import config
 import data_handler 
 from svg import SVG
 
 TAG = 'VASTGUI'
-
-NUM_WORDS = 10
-MIN_WLEN  = 3
 
 data             = data_handler.load_data()
 useful_wordlist  = data_handler.get_useful_words()
@@ -147,12 +145,13 @@ def count_words(prefix_count, wword_count):
         for word in tweet.split():
             if word.startswith('@') or word.count(':') > 1:
                 continue
-            word = re.sub(r'([iauhy])\1+', r'\1', word)
-            word = re.sub('[:]', '', word)
-            word = lemmatizer.lemmatize(word, pos='n') # TODO move after updating prefix_count?
-            word = lemmatizer.lemmatize(word, pos='v')
-            if len(word) > MIN_WLEN:
-                prefix = word[:MIN_WLEN+1]
+            if config.DO_LEMMATIZE:
+                word = re.sub(r'([iauhy])\1+', r'\1', word)
+                word = re.sub('[:]', '', word)
+                word = lemmatizer.lemmatize(word, pos='n') # TODO move after updating prefix_count?
+                word = lemmatizer.lemmatize(word, pos='v')
+            if len(word) > config.MIN_WLEN:
+                prefix = word[:config.MIN_WLEN+1]
                 if prefix in useless_wordlist:
                     continue
                 if not prefix in prefix_count[location]:
@@ -173,9 +172,8 @@ def count_users():
     user_count = data.account.value_counts()
     user_count = user_count[user_count.between(30, user_count.max())]
     cprint('%s: counting words tweeted by user: '
-            'replacing chars and lemmatizing '
-            '(this step might take a while...)' % TAG, 
-            'yellow', attrs=['bold', 'blink'])
+            'replacing chars and lemmatizing ' % TAG, 
+            'yellow', attrs=['bold'])
     for user, freq in user_count.items():
         if not user in user_tweet_freq:
             user_tweet_freq[user] = {}
@@ -190,8 +188,8 @@ def count_users():
                 word = re.sub('[:]', '', word)
                 word = lemmatizer.lemmatize(word, pos='n') 
                 word = lemmatizer.lemmatize(word, pos='v')
-                if len(word) > MIN_WLEN:
-                    prefix = word[:MIN_WLEN+1]
+                if len(word) > config.MIN_WLEN:
+                    prefix = word[:config.MIN_WLEN+1]
                     if not prefix in user_tweet_freq[user]:
                         user_tweet_freq[user][prefix]  = 1
                     else:
@@ -216,7 +214,7 @@ def get_freq_range(prefix_count):
     for wordcountdict in prefix_count.values():
         wordfreqlist = sorted(wordcountdict.items(), 
                     key=lambda kv: kv[1], reverse=True)
-        for word, freq in wordfreqlist[:NUM_WORDS]:
+        for word, freq in wordfreqlist[:config.NUM_WORDS]:
             frequencies.append(freq)
     return min(frequencies), max(frequencies)
 
@@ -318,13 +316,13 @@ def init_plot():
     color_bar.ticker = FixedTicker(ticks=np.linspace(min_freq, 
                     max_freq, steps, dtype=np.int))
 
-    y = np.arange(NUM_WORDS)
+    y = np.arange(config.NUM_WORDS)
     for i, (neigh,wcount) in enumerate(prefix_count.items()):
         wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
         x = []
         prefixes = []
         wlist = []
-        for prefix, freq in wordfreqlist[:NUM_WORDS]:
+        for prefix, freq in wordfreqlist[:config.NUM_WORDS]:
             x.append(freq)
             prefixes.append(prefix)
             wlist.append([' %s:%d' % (k,v) \
@@ -377,6 +375,8 @@ def update():
     global mapper
     global color_bar
 
+    global svg_div
+
     count_words(prefix_count, wword_count)
 
     # update mapper
@@ -391,18 +391,23 @@ def update():
     color_bar.ticker = FixedTicker(ticks=np.linspace(min_freq, 
                     max_freq, steps, dtype=np.int))
 
-    y = np.arange(NUM_WORDS)
+    y = np.arange(config.NUM_WORDS)
     for i, (neigh,wcount) in enumerate(prefix_count.items()):
         wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
         x = []
         prefixes = []
         wlist = []
-        for prefix, freq in wordfreqlist[:NUM_WORDS]:
+        for prefix, freq in wordfreqlist[:config.NUM_WORDS]:
             x.append(freq)
             prefixes.append(prefix)
             wlist.append([' %s:%d' % (k,v) \
                         for (k,v) in sorted(wword_count[neigh][prefix].items(), 
                                 key=lambda kv:kv[1], reverse=True)[:5]])
+
+        color_index = np.round(minmax_scale([np.mean(x[:5]), min_freq, max_freq], 
+                        feature_range=(0,5))[0])
+        map_fill_color = mapper['transform'].palette[np.int(color_index)]
+        svg.change_fill_color(neigh.replace(' ',''), map_fill_color)
 
         plt = word_barplots[i]
         src = word_sources[i]
@@ -417,6 +422,10 @@ def update():
         plt.xaxis.ticker = np.linspace(0, max(x), steps, dtype=np.int)[1:]
         
         plt.yaxis.major_label_overrides = { i : prefix for i, prefix in enumerate(prefixes) }
+    svg.update_svg_text()
+    svg_div = Div(text=svg.get_text(), width=100, height=100)
+    svg_layout.children.pop()
+    svg_layout.children.append(svg_div)
 
 grid = gridplot([ word_barplots ])
 
