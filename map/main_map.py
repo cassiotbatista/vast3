@@ -24,9 +24,9 @@ button_2 = Button(label="Plot")
 button_2.on_click(file_callback)
 
 # put the results in a row
-box = widgetbox(button_2, width=300)
 notification = Div(text=svg, width=550,height=500) # display Processing...
-f = figure(x_range = [], plot_height=250, title="Some Plot", toolbar_location=None, tools="",name = 'plot')
+
+f = figure(x_range = [], plot_height=250, title="Some Plot", toolbar_location=None, tools="", name = 'plot')
 f.vbar([], top=[], width=0.9, color=Spectral6)
 f.y_range.start = 0
 f.tools = [PanTool(),ResetTool()]
@@ -34,7 +34,7 @@ f.toolbar_location = 'above'
 f.plot_width=800
 f.plot_height=500
 
-lay = row(box, f, width=800,name='mainLayout')
+lay = row(button_2, f, width=800,name='mainLayout')
 
 curdoc().add_root(lay)
 curdoc().title = "Word Count"
