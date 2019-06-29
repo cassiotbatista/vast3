@@ -12,7 +12,6 @@ class SVG:
         self.paths, self.attrs, self.metadata = svg2paths(
                         self.SVGFILE, return_svg_attributes=True)
         self.svg_struct = self.split_attrs(self.attrs)
-        print(self.metadata)
 
     def load(self):
         with open(self.SVGFILE, 'r') as f:
@@ -42,8 +41,8 @@ class SVG:
         svg += '  <g>' # FIXME I'm losing metadata here
         for identifier in svg_structure:
             svg += '    <path id="%s"' % identifier + '\n'
-                for key, value in svg_structure[identifier].items():
-                    svg += '        %s="%s"' % (key, value) + '\n'
+            for key, value in svg_structure[identifier].items():
+                svg += '        %s="%s"' % (key, value) + '\n'
             svg += '    />' # TODO rstrip()
         svg += '  </g>'
         svg += '</svg>'
