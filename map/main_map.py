@@ -1,4 +1,4 @@
-from bokeh.layouts import widgetbox, layout, row
+from bokeh.layouts import layout, row
 from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource, CustomJS
 from bokeh.models.widgets import Div, Button, RadioButtonGroup, Select, Slider
