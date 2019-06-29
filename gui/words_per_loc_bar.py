@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 from collections import OrderedDict
 from nltk.stem import WordNetLemmatizer 
+from sklearn.preprocessing import minmax_scale
   
 from bokeh.document import Document
 from bokeh.embed import file_html
@@ -19,11 +20,12 @@ from bokeh.util.browser import view
 
 from bokeh.io import curdoc
 from bokeh.models.layouts import Row, Column
-from bokeh.models.widgets import DateRangeSlider, Button
+from bokeh.models.widgets import DateRangeSlider, Button, Div
 from bokeh.models.annotations import Title
 from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, LabelSet, Label, ColorBar, FixedTicker, HoverTool, CustomJS
 from bokeh.models.glyphs import HBar, VBar
 from bokeh.layouts import gridplot
+from bokeh.plotting import figure
 
 from bokeh.palettes import Spectral6
 from bokeh.transform import linear_cmap
@@ -31,6 +33,7 @@ from bokeh.transform import linear_cmap
 from termcolor import cprint
 
 import data_handler 
+from svg import SVG
 
 TAG = 'VASTGUI'
 
@@ -76,6 +79,11 @@ mention_barplot = Plot(
         plot_height      = 500,
         min_border       = 0, 
         toolbar_location = None)
+
+svg = SVG()
+svg_div    = Div(text=svg.get_text(), width=100, height=100)
+svg_figure = figure(x_range=[], title='St Himark Map', 
+        toolbar_location=None, name='map', plot_height=100)
 
 user_tweet_freq    = OrderedDict()
 mention_tweet_freq = OrderedDict()
@@ -291,6 +299,9 @@ def init_plot():
     global word_sources
     global mapper
 
+    global svg_div
+    global svg_figure
+
     init_user_plot()
     init_mention_plot()
 
@@ -320,6 +331,15 @@ def init_plot():
             wlist.append([' %s:%d' % (k,v) \
                         for (k,v) in sorted(wword_count[neigh][prefix].items(), 
                                 key=lambda kv:kv[1], reverse=True)[:5]])
+
+        color_index = np.round(minmax_scale([np.mean(x[:5]), min_freq, max_freq], 
+                        feature_range=(0,5))[0])
+        map_fill_color = mapper['transform'].palette[np.int(color_index)]
+        svg.change_fill_color(neigh.replace(' ',''), map_fill_color)
+        svg.update_svg_text()
+        svg_div = Div(text=svg.get_text(), width=100, height=100)
+        svg_layout.children.pop()
+        svg_layout.children.append(svg_div)
 
         plt = word_barplots[i]
         src = word_sources[i]
@@ -419,8 +439,12 @@ bottom_layout = Row(children=[
     date_range_slider, play_button,
 ])
 
+svg_layout = Row(svg_figure)
+svg_layout.children.pop()
+svg_layout.children.append(svg_div)
+
 arroba_layout = Row(children=[
-        user_barplot, mention_barplot, 
+        svg_layout, #user_barplot, mention_barplot, 
     ])
 
 main_layout = Row(children=[
