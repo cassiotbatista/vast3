@@ -1,4 +1,4 @@
-target=words_per_loc_bar
+target=main
 all:
 	bokeh serve --show $(target).py
 clean:
