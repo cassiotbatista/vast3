@@ -30,8 +30,8 @@ class SVG:
                     svg[identifier][key] = value
         return svg
 
-    def join_attrs(self, svg_structure):
-        if not isinstance(svg_structure, dict):
+    def join_attrs(self, svgdict):
+        if not isinstance(svgdict, dict):
             print('there\'s something really wrong around here')
         svg = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' + '\n'
         svg += '<svg' + '\n'
@@ -39,11 +39,25 @@ class SVG:
             svg += '    %s="%s"' % (key, value) + '\n'
         svg = svg.rstrip() + '>' + '\n' 
         svg += '    <g>' + '\n' # FIXME I'm losing metadata here
-        for identifier in svg_structure:
+        for identifier in svgdict:
             svg += '        <path id="%s"' % identifier + '\n'
-            for key, value in svg_structure[identifier].items():
+            for key, value in svgdict[identifier].items():
                 svg += '            %s="%s"' % (key, value) + '\n'
             svg = svg.rstrip() + '/>' + '\n' 
         svg += '    </g>' + '\n'
         svg += '</svg>'
         return svg
+
+    def change_fill_color(self, neigh, html_code):
+        self.svg_struct[neigh]['style'] = re.sub(
+                    'fill:#(.*?);', 'fill:#{};'.format(html_code.lower()), 
+                    self.svg_struct[neigh]['style'])
+
+    def update_svg_text(self):
+        self.svg_text = self.join_attrs(self.svg_struct)
+
+    def get_text(self):
+        return self.svg_text
+
+    def get_struct(self):
+        return self.svg_struct
