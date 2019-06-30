@@ -46,39 +46,33 @@ color_bar = ColorBar(
 
 lemmatizer = WordNetLemmatizer() 
 
-prefix_count     = OrderedDict()
-wword_count      = OrderedDict()
-user_count       = OrderedDict()
-mention_count    = OrderedDict()
+prefix_count    = OrderedDict()
+wword_count     = OrderedDict()
+user_count      = OrderedDict()
+mention_count   = OrderedDict()
 
 word_barplots   = []
 word_sources    = []
 word_hbarglyphs = []
 
-user_barplot = Plot(
-        title            = None,
-        plot_width       = 700, 
-        plot_height      = 500,
-        min_border       = 0, 
-        tools            = [HoverTool(tooltips=[
-                                    ('wlist', '@wlist'),
-                                ],
-                                point_policy='follow_mouse',
-                            )],
-        toolbar_location = None)
+user_barplot=Plot(title=None, 
+        plot_width=700, plot_height=500,
+        min_border=0, toolbar_location=None,
+        tools=[HoverTool(
+            tooltips=[('wlist', '@wlist')], 
+            point_policy='follow_mouse')])
 
-mention_barplot = Plot(
-        title            = None,
-        plot_width       = 700, 
-        plot_height      = 500,
-        min_border       = 0, 
-        toolbar_location = None)
+mention_barplot=Plot(title=None, 
+        plot_width=700, plot_height=500,
+        min_border=0, toolbar_location=None)
 
 svg = SVG()
 svg.rescale(0.45)
 svg_div    = Div(text=svg.get_text(), width=100, height=100)
-svg_figure = figure(x_range=[], title='St Himark Map', title_location='below',
-        toolbar_location=None, name='map', plot_height=100)
+svg_figure = figure(title='St Himark Map', title_location='below',
+        toolbar_location=None, name='map', plot_height=500, plot_width=400,
+        tooltips=[('(x,y)','($x,$y)'), ('index','$index')])
+
 ghost_fig = figure(title=None, plot_width=60, plot_height=400,
             min_border=0, toolbar_location=None)
 ghost_fig.add_layout(color_bar, 'right')
@@ -93,25 +87,15 @@ def init_word_barplots():
     word_sources  = []
     for i in range(len(prefix_count)):
         src = ColumnDataSource(dict(y=[], right=[], wlist=[],))
-        plt = Plot(
-            title            = None, 
-            plot_width       = 95, 
-            plot_height      = 300,
-            min_border       = 0,
-            tools            = [HoverTool(tooltips=[
-                                        ('wlist', '@wlist'),
-                                    ], 
-                                    point_policy='follow_mouse'
-                                )],
-            toolbar_location = None)
+        plt = Plot(title=None, plot_width=95, plot_height=300,
+                min_border=0, toolbar_location=None,
+                tools=[HoverTool(
+                    tooltips=[ ('wlist','@wlist')], 
+                    point_policy='follow_mouse')])
         word_barplots.append(plt)
         word_sources.append(src)
-    plt = Plot(
-            title            = None, 
-            plot_width       = 60, 
-            plot_height      = 300,
-            min_border       = 0, 
-            toolbar_location = None)
+        plt = Plot(title=None, plot_width=60, plot_height=300, 
+                min_border=0, toolbar_location = None)
     plt.add_layout(color_bar, 'right')
     word_barplots.append(plt)
 
