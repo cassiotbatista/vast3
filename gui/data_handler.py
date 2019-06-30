@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 #
+# VAST Challenge 2019: Disaster at St. Himark!
+# https://vast-challenge.github.io/2019/index.html
+#
+# Federal University of Pará (UFPA)
+#
 # author: june 2019
 # cassio batista - cassio.batista.13@gmail.com
+# edwin jueda - 
+# erick campos - 
 
 import sys
 import pandas as pd
