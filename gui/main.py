@@ -24,7 +24,7 @@ from bokeh.models.glyphs import HBar, VBar
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure
 
-from bokeh.palettes import Spectral6
+from bokeh.palettes import Spectral6, Spectral5
 from bokeh.transform import linear_cmap
 
 import config
@@ -38,6 +38,7 @@ useful_wordlist  = data_handler.get_useful_words()
 useless_wordlist = data_handler.get_useless_words()
 
 mapper = linear_cmap(field_name='right', palette=Spectral6, low=0, high=1)
+
 color_bar = ColorBar(
         color_mapper = mapper['transform'], 
         width        = 8,
@@ -75,6 +76,7 @@ mention_barplot = Plot(
 
 svg = SVG()
 svg.rescale(0.45)
+svg_mapper  = linear_cmap(field_name='right', palette=Spectral5, low=0, high=1)
 svg_div    = Div(text=svg.get_text(), width=100, height=100)
 svg_figure = figure(x_range=[], title='St Himark Map', title_location='below',
         toolbar_location=None, name='map', plot_height=100)
@@ -326,8 +328,8 @@ def init_plot():
                                 key=lambda kv:kv[1], reverse=True)[:5]])
 
         color_index = np.round(minmax_scale([np.mean(x[:5]), min_freq, max_freq], 
-                        feature_range=(0,5))[0])
-        map_fill_color = mapper['transform'].palette[np.int(color_index)]
+                        feature_range=(0,4))[0])
+        map_fill_color = svg_mapper['transform'].palette[np.int(color_index)]
         svg.change_fill_color(neigh.replace(' ',''), map_fill_color)
 
         plt = word_barplots[i]
