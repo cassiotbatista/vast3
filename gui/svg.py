@@ -72,3 +72,6 @@ class SVG:
 
     def get_struct(self):
         return self.svg_struct
+
+    def get_paths(self):
+        return self.paths
