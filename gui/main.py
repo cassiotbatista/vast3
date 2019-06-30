@@ -23,7 +23,7 @@ from bokeh.io import curdoc
 from bokeh.models.layouts import Row, Column
 from bokeh.models.widgets import DateRangeSlider, Button, Div
 from bokeh.models.annotations import Title
-from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, LabelSet, Label, ColorBar, FixedTicker, HoverTool, CustomJS
+from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, FixedTicker, HoverTool
 from bokeh.models.glyphs import HBar, VBar
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure
