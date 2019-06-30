@@ -79,6 +79,9 @@ svg.rescale(0.45)
 svg_div    = Div(text=svg.get_text(), width=100, height=100)
 svg_figure = figure(x_range=[], title='St Himark Map', title_location='below',
         toolbar_location=None, name='map', plot_height=100)
+ghost_fig = figure(title=None, plot_width=60, plot_height=400,
+            min_border=0, toolbar_location=None)
+ghost_fig.add_layout(color_bar, 'right')
 
 user_tweet_freq    = OrderedDict()
 mention_tweet_freq = OrderedDict()
@@ -448,7 +451,7 @@ bottom_layout = Row(children=[
 svg_layout = Row(svg_figure, width=450)
 
 arroba_layout = Row(children=[
-    svg_layout, user_barplot, mention_barplot, 
+    ghost_fig, svg_layout, user_barplot, mention_barplot, 
 ])
 
 main_layout = Row(children=[
