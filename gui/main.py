@@ -24,7 +24,7 @@ from bokeh.models.glyphs import HBar, VBar
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure
 
-from bokeh.palettes import Spectral6, Spectral5
+from bokeh.palettes import Spectral6
 from bokeh.transform import linear_cmap
 
 import config
@@ -76,7 +76,6 @@ mention_barplot = Plot(
 
 svg = SVG()
 svg.rescale(0.45)
-svg_mapper  = linear_cmap(field_name='right', palette=Spectral5, low=0, high=1)
 svg_div    = Div(text=svg.get_text(), width=100, height=100)
 svg_figure = figure(x_range=[], title='St Himark Map', title_location='below',
         toolbar_location=None, name='map', plot_height=100)
@@ -328,8 +327,8 @@ def init_plot():
                                 key=lambda kv:kv[1], reverse=True)[:5]])
 
         color_index = np.round(minmax_scale([np.mean(x[:5]), min_freq, max_freq], 
-                        feature_range=(0,4))[0])
-        map_fill_color = svg_mapper['transform'].palette[np.int(color_index)]
+                        feature_range=(0,5))[0])
+        map_fill_color = mapper['transform'].palette[np.int(color_index)]
         svg.change_fill_color(neigh.replace(' ',''), map_fill_color)
 
         plt = word_barplots[i]
@@ -447,12 +446,10 @@ bottom_layout = Row(children=[
 ])
 
 svg_layout = Row(svg_figure, width=450)
-svg_layout.children.pop()
-svg_layout.children.append(svg_div)
 
 arroba_layout = Row(children=[
-       svg_layout, user_barplot, mention_barplot, 
-    ])
+    svg_layout, user_barplot, mention_barplot, 
+])
 
 main_layout = Row(children=[
     Column(children=[ 
