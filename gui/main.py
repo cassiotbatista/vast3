@@ -15,10 +15,6 @@ from nltk.stem import WordNetLemmatizer
 from termcolor import cprint
 from sklearn.preprocessing import minmax_scale
   
-from bokeh.document import Document
-from bokeh.embed import file_html
-from bokeh.util.browser import view
-
 from bokeh.io import curdoc
 from bokeh.models.layouts import Row, Column
 from bokeh.models.widgets import DateRangeSlider, Button, Div
