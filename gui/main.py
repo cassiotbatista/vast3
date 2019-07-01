@@ -18,7 +18,6 @@ import pandas as pd
 import numpy as np
 
 from collections import OrderedDict
-from nltk.stem import WordNetLemmatizer 
 from termcolor import cprint
 from sklearn.preprocessing import minmax_scale
   
@@ -51,8 +50,6 @@ color_bar = ColorBar(
         color_mapper = mapper['transform'], 
         width        = 8,
         location     = (0,0))
-
-lemmatizer = WordNetLemmatizer() 
 
 prefix_count    = OrderedDict()
 wword_count     = OrderedDict()
@@ -122,10 +119,7 @@ init_wordcount()
 init_word_barplots()
 
 def count_words(prefix_count, wword_count):
-    cprint('%s: counting words: '
-            'replacing chars and lemmatizing '
-            '(this step might take a while...)' % TAG, 
-            'yellow', attrs=['bold', 'blink'])
+    cprint('%s: counting words...' % TAG, 'yellow', attrs=['bold'])
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
@@ -137,11 +131,8 @@ def count_words(prefix_count, wword_count):
         for word in tweet.split():
             if word.startswith('@') or word.count(':') > 1:
                 continue
-            if config.DO_LEMMATIZE:
-                word = re.sub(r'([iauhy])\1+', r'\1', word)
-                word = re.sub('[:]', '', word)
-                word = lemmatizer.lemmatize(word, pos='n') # TODO move after updating prefix_count?
-                word = lemmatizer.lemmatize(word, pos='v')
+            word = re.sub(r'([iauhy])\1+', r'\1', word)
+            word = re.sub('[:]', '', word)
             if len(word) > config.MIN_WLEN:
                 prefix = word[:config.MIN_WLEN+1]
                 if prefix in useless_wordlist:
@@ -163,9 +154,7 @@ def count_users():
     cprint('%s: counting @ users...' % TAG, 'yellow', attrs=['bold'])
     user_count = data.account.value_counts()
     user_count = user_count[user_count.between(30, user_count.max())]
-    cprint('%s: counting words tweeted by user: '
-            'replacing chars and lemmatizing ' % TAG, 
-            'yellow', attrs=['bold'])
+    cprint('%s: counting words tweeted by user...' % TAG, 'yellow', attrs=['bold'])
     for user, freq in user_count.items():
         if not user in user_tweet_freq:
             user_tweet_freq[user] = {}
@@ -178,8 +167,6 @@ def count_users():
                     continue
                 word = re.sub(r'([iauhy])\1+', r'\1', word)
                 word = re.sub('[:]', '', word)
-                word = lemmatizer.lemmatize(word, pos='n') 
-                word = lemmatizer.lemmatize(word, pos='v')
                 if len(word) > config.MIN_WLEN:
                     prefix = word[:config.MIN_WLEN+1]
                     if not prefix in user_tweet_freq[user]:
