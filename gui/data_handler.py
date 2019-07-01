@@ -18,10 +18,14 @@ pd.set_option('display.max_colwidth', -1)
 pd.set_option('display.max_columns', None) 
 
 from termcolor import cprint
+from nltk.tokenize import WhitespaceTokenizer
+from nltk.stem import WordNetLemmatizer
 
 import config
 
 TAG = 'DH'
+tokenizer  = WhitespaceTokenizer()
+lemmatizer = WordNetLemmatizer()
 
 def get_replace_rules():
     rules = {}
@@ -47,6 +51,11 @@ def get_useful_words():
             wordlist.append(word)
     return wordlist
 
+def lemmatize(text):
+    if isinstance(text, str):
+        tokens = [lemmatizer.lemmatize(word) for word in tokenizer.tokenize(text)]
+        return ' '.join(tokens)
+
 def preprocess(data):
     mapping_rules = get_replace_rules()
     cprint('%s: replacing wrong words' % TAG, 'green', attrs=['bold'])
@@ -56,6 +65,9 @@ def preprocess(data):
     for col in data.columns:
         if col != 'time':
             data[col] = data[col].str.lower()
+    cprint('%s: lemmatizing words twice (this step may take a while...)' % TAG, 
+            'green', attrs=['bold', 'blink'])
+    data['message'] = data.message.apply(lemmatize)
     return data
 
 def load_data():
