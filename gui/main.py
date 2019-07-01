@@ -37,7 +37,6 @@ from bokeh.transform import linear_cmap
 import config
 import data_handler 
 
-from xml.dom import minidom
 from svg2 import SVG
 
 TAG = 'VASTGUI'
