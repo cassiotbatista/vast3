@@ -11,9 +11,26 @@
 # erick campos - 
 
 from xml.dom import minidom
+import re
+
 import config
 
-INDENT_SIZE = 4
+class SVG:
+    def __init__(self):
+        super(SVG, self).__init__()
+        doc  = minidom.parse(config.SVGFILE)
+        root = doc.getElementsByTagName(config.SVG_NODE_HIERARCHY[0])[0]
+        self.svg = SVGNode(root)
+
+    def rescale(self, factor):
+        self.svg.rescale(factor)
+
+    def to_string(self):
+        return self.svg.to_string()
+
+    def change_fill_color(self, neigh, html_code):
+        path = self.svg.find_path_by_id(self.svg, neigh)
+        path.metadata['style']['fill'] = html_code.lower()
 
 class SVGNode:
     def __init__(self, root):
@@ -44,6 +61,21 @@ class SVGNode:
                     if self.tag == 'tspan':
                         self.children.append(SVGNode(child))
 
+    # NOTE: assumes 'mm' as universal unit
+    def rescale(self, factor):
+        if not isinstance(factor, float) or factor < 0 or factor > 1:
+            print('it is wrong')
+        self.metadata['width']  = '%.5fmm' % (factor * \
+                    float(re.findall('\d+.\d+', self.metadata['width'])[0]))
+        self.metadata['height'] = '%.5fmm' % (factor * \
+                    float(re.findall('\d+.\d+', self.metadata['height'])[0]))
+
+    def to_tag(self):
+        string = '%s -> %s \n' %(self.tag, self.metadata['id'] if 'id' in self.metadata else self.metadata['text'])
+        for child in self.children:
+            string += child.to_tag()
+        return string
+
     def to_string(self):
         if 'text' in self.metadata:
             return self.metadata['text'] 
@@ -71,8 +103,15 @@ class SVGNode:
             string += '\n'
         return string
 
+    def find_path_by_id(self, node, idd):
+        for child in node.children:
+            if child.tag == 'path' and child.metadata['id'] == idd:
+                return child
+        for child in node.children:
+            return self.find_path_by_id(child, idd)
+
 if __name__=='__main__':
     doc  = minidom.parse(config.SVGFILE)
     root = doc.getElementsByTagName(config.SVG_NODE_HIERARCHY[0])[0]
     svg  = SVGNode(root)
-    print(svg.to_string())
+    print(svg.to_tag())
