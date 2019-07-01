@@ -36,7 +36,9 @@ from bokeh.transform import linear_cmap
 
 import config
 import data_handler 
-from svg import SVG
+
+from xml.dom import minidom
+from svg2 import SVG
 
 TAG = 'VASTGUI'
 
@@ -75,7 +77,7 @@ mention_barplot=Plot(title=None,
 
 svg = SVG()
 svg.rescale(0.45)
-svg_div    = Div(text=svg.get_text(), width=100, height=100)
+svg_div    = Div(text=svg.to_string(), width=100, height=100)
 svg_figure = figure(title='St Himark Map', title_location='below',
         toolbar_location=None, name='map', plot_height=500, plot_width=400,
         tooltips=[('(x,y)','($x,$y)'), ('index','$index')])
@@ -351,8 +353,7 @@ def init_plot():
         plt.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
         plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
-    svg.update_svg_text()
-    svg_div = Div(text=svg.get_text(), width=100, height=100)
+    svg_div = Div(text=svg.to_string(), width=100, height=100)
     svg_layout.children.pop()
     svg_layout.children.append(svg_div)
 
@@ -413,8 +414,7 @@ def update():
         plt.xaxis.ticker = np.linspace(0, max(x), steps, dtype=np.int)[1:]
         
         plt.yaxis.major_label_overrides = { i : prefix for i, prefix in enumerate(prefixes) }
-    svg.update_svg_text()
-    svg_div = Div(text=svg.get_text(), width=100, height=100)
+    svg_div = Div(text=svg.to_string(), width=100, height=100)
     svg_layout.children.pop()
     svg_layout.children.append(svg_div)
 
