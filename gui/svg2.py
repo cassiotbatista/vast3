@@ -44,10 +44,6 @@ class SVGNode:
                     if self.tag == 'tspan':
                         self.children.append(SVGNode(child))
 
-    def to_tag(self):
-        print(INDENT_SIZE*' '*self.level, self.tag, ' ->', end='\t')
-        print(self.metadata['id']) if 'id' in self.metadata else print()
-
     def to_string(self):
         if 'text' in self.metadata:
             return self.metadata['text'] 
