@@ -318,7 +318,7 @@ def init_plot():
         src.data = dict(y=y, right=x, wlist=wlist)
 
         t = Title()
-        t.text = neigh[:13]
+        t.text = neigh.title()[:13]
         plt.title = t
 
         glyph = HBar(y='y', right='right', left=0, height=0.90, fill_color=mapper)
@@ -384,7 +384,7 @@ def update():
 
         color_index = np.round(minmax_scale([np.mean(x[:5]), min_freq, max_freq], 
                         feature_range=(0,5))[0])
-        map_fill_color = mapper['transform'].palette[np.int(color_index)]
+        map_fill_color = Spectral6[np.int(color_index)]
         svg.change_fill_color(neigh.replace(' ',''), map_fill_color)
 
         plt = word_barplots[i]
