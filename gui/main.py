@@ -289,9 +289,9 @@ def init_plot():
     mapper['transform'].high = max_freq
 
     # update colorbar tickers
-    steps = 11
-    if max_freq < steps:
-        steps = max_freq
+    steps = 13
+    while max_freq < steps:
+        steps = steps//2
     color_bar.ticker = FixedTicker(ticks=np.linspace(min_freq, 
                     max_freq, steps, dtype=np.int))
 
@@ -310,7 +310,7 @@ def init_plot():
 
         color_index = np.round(minmax_scale([np.mean(x[:5]), min_freq, max_freq], 
                         feature_range=(0,5))[0])
-        map_fill_color = mapper['transform'].palette[np.int(color_index)]
+        map_fill_color = Spectral6[np.int(color_index)]
         svg.change_fill_color(neigh.replace(' ',''), map_fill_color)
 
         plt = word_barplots[i]
@@ -363,9 +363,9 @@ def update():
     mapper['transform'].high = max_freq
 
     # update colorbar tickers
-    steps = 11
-    if max_freq < steps:
-        steps = max_freq
+    steps = 13
+    while max_freq < steps:
+        steps = steps//2
     color_bar.ticker = FixedTicker(ticks=np.linspace(min_freq, 
                     max_freq, steps, dtype=np.int))
 
