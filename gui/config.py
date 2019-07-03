@@ -26,7 +26,8 @@ SVGFILE = '../MC3/maps/custom/neigh_labels.svg'
 SVGTEST = '../MC3/maps/mapa_vast_vetorizado.svg'
 SVG_NODE_HIERARCHY = ['svg', 'g', 'path', 'text', 'tspan']
 
-DATA_CSVFILE = '../MC3/data/YInt.csv'
-REPLACE_FILE = '../src/replace.txt'
-USELESS_FILE = '../src/w_useless.txt'
-USEFUL_FILE  = '../src/w_useful.txt'
+DATA_CSVFILE  = '../MC3/data/YInt.csv'
+REPLACE_FILE  = '../src/replace.txt'
+USELESS_FILE  = '../src/w_useless.txt'
+USEFUL_FILE   = '../src/w_useful.txt'
+KEYPREFS_FILE = '../src/keywords.txt'

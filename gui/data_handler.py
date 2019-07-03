@@ -51,6 +51,14 @@ def get_useful_words():
             wordlist.append(word)
     return wordlist
 
+def get_keywords():
+    wordlist = []
+    with open(config.KEYPREFS_FILE) as f:
+        for line in f:
+            prefix, words = line.split(':')
+            wordlist.append(prefix)
+    return wordlist
+
 def lemmatize(text, pos):
     if isinstance(text, str):
         tokens = [lemmatizer.lemmatize(word, pos=pos) \
