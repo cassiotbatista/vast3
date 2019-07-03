@@ -51,9 +51,10 @@ def get_useful_words():
             wordlist.append(word)
     return wordlist
 
-def lemmatize(text):
+def lemmatize(text, pos):
     if isinstance(text, str):
-        tokens = [lemmatizer.lemmatize(word) for word in tokenizer.tokenize(text)]
+        tokens = [lemmatizer.lemmatize(word, pos=pos) \
+                for word in tokenizer.tokenize(text)]
         return ' '.join(tokens)
 
 def preprocess(data):
@@ -65,9 +66,11 @@ def preprocess(data):
     for col in data.columns:
         if col != 'time':
             data[col] = data[col].str.lower()
-    cprint('%s: lemmatizing words twice (this step may take a while...)' % TAG, 
-            'green', attrs=['bold', 'blink'])
-    data['message'] = data.message.apply(lemmatize)
+    if config.DO_LEMMATIZE:
+        cprint('%s: lemmatizing words twice (this step may take a while...)' % TAG, 
+                'green', attrs=['bold', 'blink'])
+        data['message'] = data.message.apply(lemmatize, args=('n'))
+        data['message'] = data.message.apply(lemmatize, args=('v'))
     return data
 
 def load_data():

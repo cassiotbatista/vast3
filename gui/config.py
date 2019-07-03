@@ -14,6 +14,11 @@ from termcolor import cprint
 
 TAG = 'cfg'
 
+DO_LEMMATIZE = True
+if not DO_LEMMATIZE:
+    cprint('%s: lemmatize step will be skipped to speed up processing' % TAG, 
+            'red', attrs=['bold'])
+
 NUM_WORDS = 10
 MIN_WLEN  = 3
 
