@@ -121,14 +121,15 @@ init_word_barplots()
 def ridge(category, data=None, scale=1.0):
     return list(zip([category]*len(data), scale*data))
 
-mysrc = ColumnDataSource(data=dict(x=list(range(data.index[-1])),))
-padd = np.int(data.index[-1] * 0.01)
-neigh_h_figure = figure(title='horizon chart wannabe',
+mysrc = ColumnDataSource(data=dict(x=np.arange(data.index[-1]),))
+padd = np.int(data.index[-1] * 0.01) # 1% xlim margin padd 
+neigh_h_figure = figure(title='Horizon chart wannabe',
         y_range=[key.title()[:13] for key in prefix_count.keys()] + [''],
         #x_range=(data.index[0] - padd, data.index[-1] + padd),
         x_range=(0, 1000),
         plot_width=95*len(word_barplots), plot_height=900,
         toolbar_location=None)
+
 for neigh in prefix_count.keys():
     if neigh is '':
         continue
