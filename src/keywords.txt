@@ -1,0 +1,12 @@
+powe: power
+wate: water
+sewe: sewer
+plan: plant
+nucl: nuclear
+brid: bridge
+road: road
+shak: shake
+quak: quake
+eart: earthquake
+trem: tremble
+quav: quaver
