@@ -7,8 +7,8 @@
 #
 # author: june 2019
 # cassio batista - cassio.batista.13@gmail.com
-# edwin jueda - 
-# erick campos - 
+# edwin jueda    - 
+# erick campos   - 
 
 import sys
 import os
@@ -117,6 +117,22 @@ def init_wordcount():
 
 init_wordcount()
 init_word_barplots()
+
+def ridge(category, data=None, scale=20):
+    return list(zip([category]*len(data), scale*data))
+
+mysrc = ColumnDataSource(dict(x=[],))
+padd = np.int(data.index[-1] * 0.05)
+neigh_h_figure = figure(title='horizon chart wannabe',
+        y_range=[key.title()[:13] for key in prefix_count.keys()],
+        x_range=(data.index[0] - padd, data.index[-1] + padd),
+        plot_width=95*(len(word_barplots)-1), plot_height=300,
+        toolbar_location=None)
+for neigh in prefix_count.keys():
+    y = ridge(neigh, data=np.random.randint(10, 500, size=41000))
+    mysrc.add(y, neigh)
+    neigh_h_figure.patch('x', neigh, color='red', alpha=0.6, 
+            line_color='black', source=mysrc)
 
 def count_words(prefix_count, wword_count):
     cprint('%s: counting words...' % TAG, 'yellow', attrs=['bold'])
@@ -436,6 +452,7 @@ main_layout = Row(children=[
         grid, 
         bottom_layout, 
         arroba_layout,
+        neigh_h_figure,
     ]),
 ])
 
