@@ -118,21 +118,36 @@ def init_wordcount():
 init_wordcount()
 init_word_barplots()
 
-def ridge(category, data=None, scale=20):
+def ridge(category, data=None, scale=1.0):
     return list(zip([category]*len(data), scale*data))
 
-mysrc = ColumnDataSource(dict(x=[],))
-padd = np.int(data.index[-1] * 0.05)
+mysrc = ColumnDataSource(data=dict(x=list(range(data.index[-1])),))
+padd = np.int(data.index[-1] * 0.01)
 neigh_h_figure = figure(title='horizon chart wannabe',
-        y_range=[key.title()[:13] for key in prefix_count.keys()],
-        x_range=(data.index[0] - padd, data.index[-1] + padd),
-        plot_width=95*(len(word_barplots)-1), plot_height=300,
+        y_range=[key.title()[:13] for key in prefix_count.keys()] + [''],
+        #x_range=(data.index[0] - padd, data.index[-1] + padd),
+        x_range=(0, 1000),
+        plot_width=95*len(word_barplots), plot_height=900,
         toolbar_location=None)
 for neigh in prefix_count.keys():
-    y = ridge(neigh, data=np.random.randint(10, 500, size=41000))
+    if neigh is '':
+        continue
+    neigh = neigh.title()[:13]
+    vector = np.insert(np.random.rand(data.index[-1]-1), 0, 0) # FIXME y0 bug
+    y = ridge(neigh, data=vector)
     mysrc.add(y, neigh)
-    neigh_h_figure.patch('x', neigh, color='red', alpha=0.6, 
-            line_color='black', source=mysrc)
+    neigh_h_figure.patch('x', neigh, 
+            color='red', line_color='red', 
+            fill_alpha=0.4, line_alpha=0.1,
+            source=mysrc)
+
+neigh_h_figure.outline_line_color = None
+neigh_h_figure.ygrid.grid_line_color = None
+neigh_h_figure.xgrid.grid_line_color = "#dddddd"
+neigh_h_figure.axis.minor_tick_line_color = None
+neigh_h_figure.axis.major_tick_line_color = None
+neigh_h_figure.axis.axis_line_color = None
+neigh_h_figure.y_range.range_padding = -0.04
 
 def count_words(prefix_count, wword_count):
     cprint('%s: counting words...' % TAG, 'yellow', attrs=['bold'])
