@@ -22,11 +22,11 @@ from termcolor import cprint
 from sklearn.preprocessing import minmax_scale
   
 from bokeh.io import curdoc
-from bokeh.models.layouts import Row, Column
+from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, FixedTicker, HoverTool, Slider
 from bokeh.models.widgets import DateRangeSlider, Button, Div
-from bokeh.models.annotations import Title
-from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, FixedTicker, HoverTool
+from bokeh.models.layouts import Row, Column
 from bokeh.models.glyphs import HBar, VBar
+from bokeh.models.annotations import Title
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure
 
@@ -37,12 +37,15 @@ import config
 import data_handler 
 
 from svg2 import SVG
+from custom import Custom
 
 TAG = 'VASTGUI'
 
 data             = data_handler.load_data()
 useful_wordlist  = data_handler.get_useful_words()
 useless_wordlist = data_handler.get_useless_words()
+keywords         = data_handler.get_keywords()
+#blackusers       = data_handler.get_black_users() # TODO
 
 mapper = linear_cmap(field_name='right', palette=Spectral6, low=0, high=1)
 
@@ -63,8 +66,7 @@ word_hbarglyphs = []
 user_barplot=Plot(title=None, 
         plot_width=700, plot_height=500,
         min_border=0, toolbar_location=None,
-        tools=[HoverTool(
-            tooltips=[('wlist', '@wlist')], 
+        tools=[HoverTool(tooltips=[('wlist', '@wlist')], 
             point_policy='follow_mouse')])
 
 mention_barplot=Plot(title=None, 
@@ -94,8 +96,7 @@ def init_word_barplots():
         src = ColumnDataSource(dict(y=[], right=[], wlist=[],))
         plt = Plot(title=None, plot_width=95, plot_height=300,
                 min_border=0, toolbar_location=None,
-                tools=[HoverTool(
-                    tooltips=[ ('wlist','@wlist')], 
+                tools=[HoverTool(tooltips=[ ('wlist','@wlist')], 
                     point_policy='follow_mouse')])
         word_barplots.append(plt)
         word_sources.append(src)
@@ -121,26 +122,13 @@ init_word_barplots()
 def ridge(category, data=None, scale=1.0):
     return list(zip([category]*len(data), scale*data))
 
-mysrc = ColumnDataSource(data=dict(x=np.arange(data.index[-1]),))
 padd = np.int(data.index[-1] * 0.01) # 1% xlim margin padd 
 neigh_h_figure = figure(title='Horizon chart wannabe',
         y_range=[key.title()[:13] for key in prefix_count.keys()] + [''],
         #x_range=(data.index[0] - padd, data.index[-1] + padd),
         x_range=(0, 1000),
-        plot_width=95*len(word_barplots), plot_height=900,
+        plot_width=95*len(word_barplots), plot_height=600,
         toolbar_location=None)
-
-for neigh in prefix_count.keys():
-    if neigh is '':
-        continue
-    neigh = neigh.title()[:13]
-    vector = np.insert(np.random.rand(data.index[-1]-1), 0, 0) # FIXME y0 bug
-    y = ridge(neigh, data=vector)
-    mysrc.add(y, neigh)
-    neigh_h_figure.patch('x', neigh, 
-            color='red', line_color='red', 
-            fill_alpha=0.4, line_alpha=0.1,
-            source=mysrc)
 
 neigh_h_figure.outline_line_color = None
 neigh_h_figure.ygrid.grid_line_color = None
@@ -149,6 +137,41 @@ neigh_h_figure.axis.minor_tick_line_color = None
 neigh_h_figure.axis.major_tick_line_color = None
 neigh_h_figure.axis.axis_line_color = None
 neigh_h_figure.y_range.range_padding = -0.04
+
+horizon_slider = Slider(start=1, end=84, step=1, value=1, 
+        title=None, orientation='vertical')
+horizon_slider_title = Custom(slider=horizon_slider)
+
+# NOTE ignore uses at first
+def count_keywords():
+    cprint('%s: counting keywords per neighbourhood...' % TAG, 
+            'yellow', attrs=['bold'])
+    neighbourhoods = OrderedDict.fromkeys(prefix_count.keys(), {})
+    #for location, tweet in zip(data.location, data.message):
+    #    if location not in neighbourhoods:
+    #        continue
+    #    for keyprefix, word in itertools.product(keywords, tweet.split()): 
+    #        if isinstance(word, str):
+    #            if len(word) > 3 and word.startswith(keyprefix):
+    #                if not keyprefix in neighbourhoods[location]:
+    #                    neighbourhoods[location][keyprefix] = 1
+    #                else:
+    #                    neighbourhoods[location][keyprefix] += 1
+
+    for neigh in neighbourhoods.keys():
+        horizon_source = ColumnDataSource(data=dict(x=np.arange(data.index[-1]),))
+        if neigh is '':
+            continue
+        neigh = neigh.title()[:13]
+        vector = np.insert(np.random.rand(data.index[-1]-1), 0, 0) # FIXME y0 bug
+        y = ridge(neigh, data=vector)
+        horizon_source.add(y, neigh)
+        neigh_h_figure.patch('x', neigh, 
+                color='red', line_color='red', 
+                fill_alpha=0.4, line_alpha=0.1,
+                source=horizon_source)
+
+count_keywords()
 
 def count_words(prefix_count, wword_count):
     cprint('%s: counting words...' % TAG, 'yellow', attrs=['bold'])
@@ -463,12 +486,16 @@ arroba_layout = Row(children=[
     ghost_fig, svg_layout, user_barplot, mention_barplot, 
 ])
 
+horizon_layout = Row(children=[
+    horizon_slider_title, horizon_slider, neigh_h_figure, 
+    ])
+
 main_layout = Row(children=[
     Column(children=[ 
         grid, 
         bottom_layout, 
         arroba_layout,
-        neigh_h_figure,
+        horizon_layout,
     ]),
 ])
 
