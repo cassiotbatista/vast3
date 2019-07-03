@@ -7,14 +7,14 @@
 #
 # author: june 2019
 # cassio batista - cassio.batista.13@gmail.com
-# edwin jueda - 
-# erick campos - 
+# edwin jueda    - 
+# erick campos   - 
 
 from termcolor import cprint
 
 TAG = 'cfg'
 
-DO_LEMMATIZE = True
+DO_LEMMATIZE = False
 if not DO_LEMMATIZE:
     cprint('%s: lemmatize step will be skipped to speed up processing' % TAG, 
             'red', attrs=['bold'])

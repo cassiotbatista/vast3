@@ -7,8 +7,8 @@
 #
 # author: june 2019
 # cassio batista - cassio.batista.13@gmail.com
-# edwin jueda - 
-# erick campos - 
+# edwin jueda    - 
+# erick campos   - 
 
 import sys
 import pandas as pd
@@ -67,7 +67,8 @@ def preprocess(data):
         if col != 'time':
             data[col] = data[col].str.lower()
     if config.DO_LEMMATIZE:
-        cprint('%s: lemmatizing words twice (this step may take a while...)' % TAG, 
+        cprint('%s: lemmatizing words twice '
+                '(this step may take a while...)' % TAG, 
                 'green', attrs=['bold', 'blink'])
         data['message'] = data.message.apply(lemmatize, args=('n'))
         data['message'] = data.message.apply(lemmatize, args=('v'))
