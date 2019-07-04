@@ -100,7 +100,6 @@ real: 0
 good: 0
 grea: 0
 shou: 0
-tomorrow!:  0
 back: 0
 peop: 0
 here: 0
@@ -108,3 +107,17 @@ give: 0
 noth: 0
 last: 0 
 haha: 0
+plac: 0
+come: 0
+char: 0
+prof: 0
+cour: 0
+alwa: 0
+safe: 0
+comp: 0
+clea: 0
+read: 0
+happ: 0
+unti: 0
+pret: 0
+year: 0
