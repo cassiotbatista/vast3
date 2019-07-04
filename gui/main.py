@@ -129,11 +129,9 @@ def count_words(prefix_count, wword_count):
             continue
         if not isinstance(tweet, str):
             continue
-        tweet = re.sub('[#!?,.;\-$"\*/\')(><]', ' ', tweet)
         for word in tweet.split():
             if word.startswith('@') or word.count(':') > 1:
                 continue
-            word = re.sub(r'([iauhy])\1+', r'\1', word)
             word = re.sub('[:]', '', word)
             if len(word) > config.MIN_WLEN:
                 prefix = word[:config.MIN_WLEN+1]
@@ -163,11 +161,9 @@ def count_users():
         for tweet in data[data.account == user].message:
             if not isinstance(tweet, str):
                 continue
-            tweet = re.sub('[#!?,.;\-$"\*/\')(><]', ' ', tweet)
             for word in tweet.split():
                 if word.startswith('@') or word.count(':') > 1:
                     continue
-                word = re.sub(r'([iauhy])\1+', r'\1', word)
                 word = re.sub('[:]', '', word)
                 if len(word) > config.MIN_WLEN:
                     prefix = word[:config.MIN_WLEN+1]

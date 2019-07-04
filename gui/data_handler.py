@@ -33,7 +33,7 @@ def get_replace_rules():
         for line in f:
             key, value = line.split()
             rules[key] = value
-    return rules
+    return rules.items()
 
 def get_useless_words():
     wordlist = []
@@ -65,24 +65,50 @@ def lemmatize(text, pos):
                 for word in tokenizer.tokenize(text)]
         return ' '.join(tokens)
 
-def preprocess(data):
-    mapping_rules = get_replace_rules()
-    cprint('%s: replacing wrong words' % TAG, 'green', attrs=['bold'])
-    for wrong, correct in mapping_rules.items():
-        data['message'] = data['message'].str.replace(wrong, correct)
-    cprint('%s: lowercasing text cols' % TAG, 'green', attrs=['bold'])
+def reduce_lengthening(data):
+    data['message'] = data.message.str.replace(r'(.)\1{2,}',r'\1\1')
+    return data
+
+def normalise(data):
+    data['message'] = data.message.str.replace(r'[#!?,.;\-$"\*/)(><\']', ' ')
+    data['message'] = data.message.str.replace(r'([iauhy])\1+', r'\1')
+    return data
+
+def lowercase(data):
     for col in data.columns:
         if col != 'time':
             data[col] = data[col].str.lower()
+    return data
+
+def preprocess(data):
+    cprint('%s: converting message column to str' % TAG, 'green', attrs=['bold'])
+    data['message'] = data.message.apply(str)
+    cprint('%s: lowercasing text cols' % TAG, 'green', attrs=['bold'])
+    data = lowercase(data)
+    cprint('%s: replacing wrong words' % TAG, 'green', attrs=['bold'])
+    for wrong, correct in get_replace_rules():
+        data['message'] = data['message'].str.replace(wrong, correct)
+    cprint('%s: normalising (bad chars)' % TAG, 'green', attrs=['bold'])
+    data = normalise(data)
+    cprint('%s: removing chars redundancy' % TAG, 'green', attrs=['bold'])
+    data = reduce_lengthening(data)
     if config.DO_LEMMATIZE:
-        cprint('%s: lemmatizing words twice '
-                '(this step may take a while...)' % TAG, 
+        cprint('%s: lemmatizing words twice (it may take a while...)' % TAG, 
                 'green', attrs=['bold', 'blink'])
         data['message'] = data.message.apply(lemmatize, args=('n'))
         data['message'] = data.message.apply(lemmatize, args=('v'))
+    if config.DO_KW_SELECT:
+        cprint('%s: selecting tweets by keyword' % TAG, 'green', attrs=['bold'])
+        wordgex = '|'.join(get_keywords())
+        data = data[data['message'].str.contains(wordgex)]
     return data
 
 def load_data():
     cprint('%s: loading data' % TAG, 'green', attrs=['bold'])
-    data = pd.read_csv(config.DATA_CSVFILE, parse_dates=['time'])
-    return preprocess(data)
+    return pd.read_csv(config.DATA_PROC_CSVFILE, parse_dates=['time'])
+
+if __name__=='__main__':
+    cprint('%s: loading data' % TAG, 'green', attrs=['bold'])
+    data = preprocess(pd.read_csv(config.DATA_SRC_CSVFILE, parse_dates=['time']))
+    with open(config.DATA_PROC_CSVFILE, 'w') as f:
+        data.to_csv(f, index=False, quoting=1)
