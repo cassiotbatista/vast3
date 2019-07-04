@@ -120,69 +120,6 @@ def init_wordcount():
 init_wordcount()
 init_word_barplots()
 
-def ridge(category, data=None, scale=1.0):
-    return list(zip([category]*len(data), scale*data))
-
-padd = np.int(data.index[-1] * 0.01) # 1% xlim margin padd 
-neigh_h_figure = figure(title='Horizon chart wannabe',
-        y_range=[key.title()[:13] for key in prefix_count.keys()] + [''],
-        #x_range=(data.index[0] - padd, data.index[-1] + padd),
-        x_range=(0, 1000),
-        plot_width=95*(len(word_barplots)-1), plot_height=600,
-        toolbar_location=None)
-
-neigh_h_figure.outline_line_color = None
-neigh_h_figure.ygrid.grid_line_color = None
-neigh_h_figure.xgrid.grid_line_color = "#dddddd"
-neigh_h_figure.axis.minor_tick_line_color = None
-neigh_h_figure.axis.major_tick_line_color = None
-neigh_h_figure.axis.axis_line_color = None
-neigh_h_figure.y_range.range_padding = -0.04
-
-horizon_slider = Slider(start=1, end=84, step=1, value=1, 
-        title=None, orientation='vertical')
-horizon_slider_title = Custom(slider=horizon_slider)
-horizon_ranges = []
-
-# NOTE ignore uses at first
-def count_keywords():
-    cprint('%s: counting keywords per neighbourhood...' % TAG, 
-            'yellow', attrs=['bold'])
-    neighbourhoods = OrderedDict.fromkeys(prefix_count.keys(), {})
-    #for location, tweet in zip(data.location, data.message):
-    #    if location not in neighbourhoods:
-    #        continue
-    #    for keyprefix, word in itertools.product(keywords, tweet.split()): 
-    #        if isinstance(word, str):
-    #            if len(word) > 3 and word.startswith(keyprefix):
-    #                if not keyprefix in neighbourhoods[location]:
-    #                    neighbourhoods[location][keyprefix] = 1
-    #                else:
-    #                    neighbourhoods[location][keyprefix] += 1
-
-    for i, neigh in enumerate(neighbourhoods.keys()):
-        if neigh is '':
-            continue
-        horizon_source = ColumnDataSource(data=dict(x=np.arange(data.index[-1]),))
-        neigh = neigh.title()[:13]
-        vector = np.insert(np.random.rand(data.index[-1]-1), 0, 0) # FIXME y0 bug
-        y = ridge(neigh, data=vector)
-        horizon_source.add(y, neigh)
-
-        renderer = neigh_h_figure.patch('x', neigh, name=neigh,
-                color='red', line_color='red', 
-                fill_alpha=0.4, line_alpha=0.1,
-                source=horizon_source)
-
-        horizon_ranges.append(RangeTool(x_range=Range1d((i+1)*5,(i+1)*10)))
-        horizon_ranges[-1].overlay.fill_color = "navy"
-        horizon_ranges[-1].overlay.fill_alpha = 0.2
-
-        neigh_h_figure.add_tools(horizon_ranges[-1])
-
-
-count_keywords()
-
 def count_words(prefix_count, wword_count):
     cprint('%s: counting words...' % TAG, 'yellow', attrs=['bold'])
     date_value = date_range_slider.value_as_datetime
@@ -477,7 +414,7 @@ date_range_slider = DateRangeSlider(
         value  = (data['time'].iloc[0], data['time'].iloc[-1]),
         format = '%d/%m@%H:%M',
         step   = 1,
-        width = 95*(len(word_barplots)-1)-50, # padded
+        width = 95*(len(word_barplots)-1)-40, # padded
         bar_color='purple')
 
 play_button = Button(
@@ -496,16 +433,11 @@ arroba_layout = Row(children=[
     ghost_fig, svg_layout, user_barplot, mention_barplot, 
 ])
 
-horizon_layout = Row(children=[
-    horizon_slider_title, horizon_slider, neigh_h_figure, 
-    ])
-
 main_layout = Row(children=[
     Column(children=[ 
         grid, 
         bottom_layout, 
         arroba_layout,
-        horizon_layout,
     ]),
 ])
 
