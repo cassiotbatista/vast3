@@ -38,7 +38,6 @@ import config
 import data_handler 
 
 from svg2 import SVG
-from custom import Custom
 
 TAG = 'VASTGUI'
 
@@ -369,6 +368,8 @@ def update():
 
     y = np.arange(config.NUM_WORDS)
     for i, (neigh,wcount) in enumerate(prefix_count.items()):
+        if len(wcount) == 0:
+            wcount = { 'none': 1 }
         wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
         x = []
         prefixes = []
