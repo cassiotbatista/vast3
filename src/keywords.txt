@@ -1,12 +1,48 @@
-powe: power
-wate: water
-sewe: sewer
-plan: plant
-nucl: nuclear
+ambu: ambulance 
+apoc: apocalypse 
 brid: bridge
-road: road
-shak: shake
+buil: build
+crew: crew
+cry:  cry
+dama: damage
+dang: dangerous
+dead: dead
+deat: death
+dest: destroy
+die:  die
+disa: disaster disasters
+eart: earthquake earthquakes earthqwake earthqwakes
+elec: electric electric electrician electricity
+emer: emergency
+enee: energy
+evac: evacuate evacuation
+haza: hazard
+heal: health
+help: help
+hosp: hospital hospitals
+inci: incident
+nucl: nuclear
+plan: plant
+powe: power powerlines
+prob: problem  problems
 quak: quake
-eart: earthquake
-trem: tremble
 quav: quaver
+radi: radiation
+reac: reactor
+repa: repair
+resc: rescue
+risk: risk
+road: roads
+rubb: rubble
+sad:  sad
+scar: scar
+sew:  sewage sewer
+shak: shake
+shud: shudder
+stru: structutral
+trag: tragedy
+trem: tremble
+vibr: vibrate
+vict: victims
+wate: water
+wobb: wobble

@@ -15,9 +15,9 @@ arse ass
 í '
 smoe e
 wehn w
-&quot; "
-&lt; <
-&gt; >
+&quot "
+&lt <
+&gt >
 hapened h
 hapening h
 suposed s
@@ -28,3 +28,4 @@ tyhat t
 thta t
 tyhe t
 adn a
+ytou y
