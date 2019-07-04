@@ -21,6 +21,7 @@ heal: health
 help: help
 hosp: hospital hospitals
 inci: incident
+medi: medical
 nucl: nuclear
 plan: plant
 powe: power powerlines
@@ -36,7 +37,8 @@ road: roads
 rubb: rubble
 sad:  sad
 scar: scar
-sew:  sewage sewer
+sewa: sewage
+sewe: sewer
 shak: shake
 shud: shudder
 stru: structutral
