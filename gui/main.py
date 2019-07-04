@@ -71,7 +71,7 @@ user_barplot=Plot(title=None,
             point_policy='follow_mouse')])
 
 mention_barplot=Plot(title=None, 
-        plot_width=700, plot_height=500,
+        plot_width=650, plot_height=500,
         min_border=0, toolbar_location=None)
 
 svg = SVG()
@@ -128,7 +128,7 @@ neigh_h_figure = figure(title='Horizon chart wannabe',
         y_range=[key.title()[:13] for key in prefix_count.keys()] + [''],
         #x_range=(data.index[0] - padd, data.index[-1] + padd),
         x_range=(0, 1000),
-        plot_width=95*len(word_barplots), plot_height=600,
+        plot_width=95*(len(word_barplots)-1), plot_height=600,
         toolbar_location=None)
 
 neigh_h_figure.outline_line_color = None
@@ -251,7 +251,7 @@ def count_mentions():
                         mention_count[word] += 1
                     else:
                         mention_count[word] = 1
-    return sorted(mention_count.items(), key=lambda kv: kv[1], reverse=True)[:30]
+    return sorted(mention_count.items(), key=lambda kv: kv[1], reverse=True)[:25]
 
 def get_freq_range(prefix_count):
     frequencies = []
@@ -477,7 +477,7 @@ date_range_slider = DateRangeSlider(
         value  = (data['time'].iloc[0], data['time'].iloc[-1]),
         format = '%d/%m@%H:%M',
         step   = 1,
-        width = 95*(len(word_barplots)-1),
+        width = 95*(len(word_barplots)-1)-50, # padded
         bar_color='purple')
 
 play_button = Button(
