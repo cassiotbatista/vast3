@@ -22,7 +22,8 @@ from termcolor import cprint
 from sklearn.preprocessing import minmax_scale
   
 from bokeh.io import curdoc
-from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, FixedTicker, HoverTool, Slider
+from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, \
+                            FixedTicker, HoverTool, Slider, RangeTool, Range1d
 from bokeh.models.widgets import DateRangeSlider, Button, Div
 from bokeh.models.layouts import Row, Column
 from bokeh.models.glyphs import HBar, VBar
@@ -141,6 +142,7 @@ neigh_h_figure.y_range.range_padding = -0.04
 horizon_slider = Slider(start=1, end=84, step=1, value=1, 
         title=None, orientation='vertical')
 horizon_slider_title = Custom(slider=horizon_slider)
+horizon_ranges = []
 
 # NOTE ignore uses at first
 def count_keywords():
@@ -158,18 +160,26 @@ def count_keywords():
     #                else:
     #                    neighbourhoods[location][keyprefix] += 1
 
-    for neigh in neighbourhoods.keys():
-        horizon_source = ColumnDataSource(data=dict(x=np.arange(data.index[-1]),))
+    for i, neigh in enumerate(neighbourhoods.keys()):
         if neigh is '':
             continue
+        horizon_source = ColumnDataSource(data=dict(x=np.arange(data.index[-1]),))
         neigh = neigh.title()[:13]
         vector = np.insert(np.random.rand(data.index[-1]-1), 0, 0) # FIXME y0 bug
         y = ridge(neigh, data=vector)
         horizon_source.add(y, neigh)
-        neigh_h_figure.patch('x', neigh, 
+
+        renderer = neigh_h_figure.patch('x', neigh, name=neigh,
                 color='red', line_color='red', 
                 fill_alpha=0.4, line_alpha=0.1,
                 source=horizon_source)
+
+        horizon_ranges.append(RangeTool(x_range=Range1d((i+1)*5,(i+1)*10)))
+        horizon_ranges[-1].overlay.fill_color = "navy"
+        horizon_ranges[-1].overlay.fill_alpha = 0.2
+
+        neigh_h_figure.add_tools(horizon_ranges[-1])
+
 
 count_keywords()
 
