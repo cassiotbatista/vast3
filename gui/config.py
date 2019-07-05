@@ -16,12 +16,17 @@ TAG = 'cfg'
 
 DO_LEMMATIZE = True
 if not DO_LEMMATIZE:
-    cprint('%s: lemmatize step will be skipped to speed up processing' % TAG, 
+    cprint('%s: lemmatize step will be skipped to speed up the process' % TAG, 
             'red', attrs=['bold'])
 
 DO_KW_SELECT = True
 if not DO_KW_SELECT:
     cprint('%s: all tweets will pass irrespective of the keywords defined' % TAG, 
+            'red', attrs=['bold'])
+
+DO_SPELLCHECK = True
+if not DO_SPELLCHECK:
+    cprint('%s: spell checking will be skipped to speed up the process' % TAG, 
             'red', attrs=['bold'])
 
 NUM_WORDS = 10
