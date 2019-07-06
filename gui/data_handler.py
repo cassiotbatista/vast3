@@ -72,6 +72,14 @@ def get_keywords():
             wordlist.append(prefix)
     return wordlist
 
+def get_stopwords():
+    wordlist = []
+    with open(config.STOPWORDS_FILE) as f:
+        for word in f:
+            wordlist.append(word.rstrip())
+    print(wordlist)
+    return wordlist
+
 def check_spell(text):
     global blob_count
     blob_count += 1
@@ -93,6 +101,8 @@ def normalise(data):
     data.message = data.message.str.replace(r'[=!?,.;\-$"\*/)(><\']', ' ')
     data.message = data.message.str.replace(r'([qwyuiahjkxv])\1+', r'\1')
     data.message = data.message.str.replace(r'(.)\1{2,}',r'\1\1')
+    data.message = data.message.str.replace(r'\b\w{0,1}\b', '')
+    data.message = data.message.str.replace(r'\b(\w+)( \1\b)+', r'\1')
     return data
 
 def stringify(data):
@@ -129,8 +139,13 @@ def preprocess(data):
     if config.DO_KW_SELECT:
         cprint('%s: selecting tweets by keyword' % TAG, 
                 'green', attrs=['bold'])
-        wordgex = '|'.join(get_keywords())
-        data = data.loc[data.message.str.contains(wordgex)]
+        keygex = '|'.join(get_keywords())
+        data = data.loc[data.message.str.contains(keygex)]
+    if config.DO_SW_SELECT:
+        cprint('%s: excluding tweets with stopwords' % TAG, 
+                'green', attrs=['bold'])
+        stopgex = '|'.join(get_stopwords())
+        data = data.loc[data.message.str.contains(stopgex) == False]
     if config.DO_SPELLCHECK:
         cprint('%s: checking spell (it may take a while...) ' % TAG, 
                 'green', attrs=['bold', 'blink'], end=' ')

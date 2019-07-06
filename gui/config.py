@@ -29,7 +29,12 @@ if not DO_KW_SELECT:
     cprint('%s: all tweets will pass irrespective of the keywords defined' % TAG, 
             'red', attrs=['bold'])
 
-DO_SPELLCHECK = True
+DO_SW_SELECT = True
+if not DO_SW_SELECT:
+    cprint('%s: all tweets will pass irrespective of the stopwords defined' % TAG, 
+            'red', attrs=['bold'])
+
+DO_SPELLCHECK = False
 if not DO_SPELLCHECK:
     cprint('%s: spell checking will be skipped to speed up the process' % TAG, 
             'red', attrs=['bold'])
@@ -48,3 +53,4 @@ USELESS_FILE      = '../src/w_useless.txt'
 USEFUL_FILE       = '../src/w_useful.txt'
 KEYPREFS_FILE     = '../src/keywords.txt'
 BLACKLIST_FILE    = '../src/blacklist.txt'
+STOPWORDS_FILE    = '../src/stopwords.txt'
