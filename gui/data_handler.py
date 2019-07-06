@@ -20,6 +20,7 @@ pd.set_option('display.max_columns', None)
 from termcolor import cprint
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem import WordNetLemmatizer
+from textblob import TextBlob
 
 import time
 
@@ -28,6 +29,8 @@ import config
 TAG = 'DH'
 tokenizer  = WhitespaceTokenizer()
 lemmatizer = WordNetLemmatizer()
+
+blob_count = 0
 
 def get_replace_rules():
     rules = {}
@@ -69,10 +72,17 @@ def get_keywords():
     return wordlist
 
 def lemmatize(text, pos):
-    if isinstance(text, str):
-        tokens = [lemmatizer.lemmatize(word, pos=pos) \
-                for word in tokenizer.tokenize(text)]
-        return ' '.join(tokens)
+    tokens = [lemmatizer.lemmatize(word, pos=pos) \
+            for word in tokenizer.tokenize(text)]
+    return ' '.join(tokens)
+
+def check_spell(text):
+    global blob_count
+    sys.stdout.write('\r%06d' % blob_count)
+    sys.stdout.flush()
+    blob_count += 1
+    blob = TextBlob(text).correct()
+    return blob.raw
 
 def reduce_lengthening(data):
     data['message'] = data.message.str.replace(r'(.)\1{2,}',r'\1\1')
@@ -101,10 +111,14 @@ def preprocess(data):
     cprint('%s: replacing wrong words' % TAG, 'green', attrs=['bold'])
     for wrong, correct in get_replace_rules():
         data['message'] = data['message'].str.replace(wrong, correct)
-    cprint('%s: normalising (bad chars)' % TAG, 'green', attrs=['bold'])
+    cprint('%s: normalising chars' % TAG, 'green', attrs=['bold'])
     data = normalise(data)
     cprint('%s: removing chars redundancy' % TAG, 'green', attrs=['bold'])
     data = reduce_lengthening(data)
+    if config.DO_SPELLCHECK:
+        cprint('%s: checking spell (it may take a while...) ' % TAG, 
+                'green', attrs=['bold', 'blink'])
+        data['message'] = data.message.apply(check_spell)
     if config.DO_LEMMATIZE:
         cprint('%s: lemmatizing words twice (it may take a while...)' % TAG, 
                 'green', attrs=['bold', 'blink'])
@@ -117,11 +131,13 @@ def preprocess(data):
     return data
 
 def load_data():
-    cprint('%s: loading data' % TAG, 'green', attrs=['bold'])
+    cprint('%s: loading data from "%s"' % (TAG, config.DATA_PROC_CSVFILE), 
+            'green', attrs=['bold'])
     return pd.read_csv(config.DATA_PROC_CSVFILE, parse_dates=['time'])
 
 if __name__=='__main__':
-    cprint('%s: loading data' % TAG, 'green', attrs=['bold'])
+    cprint('%s: loading data from "%s"' % (TAG, config.DATA_SRC_CSVFILE), 
+            'green', attrs=['bold'])
     data = preprocess(pd.read_csv(config.DATA_SRC_CSVFILE, parse_dates=['time']))
     with open(config.DATA_PROC_CSVFILE, 'w') as f:
         data.to_csv(f, index=False, quoting=1)
