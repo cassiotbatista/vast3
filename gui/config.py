@@ -34,13 +34,16 @@ if not DO_SW_SELECT:
     cprint('%s: all tweets will pass irrespective of the stopwords defined' % TAG, 
             'red', attrs=['bold'])
 
-DO_SPELLCHECK = False
+DO_SPELLCHECK = True
 if not DO_SPELLCHECK:
     cprint('%s: spell checking will be skipped to speed up the process' % TAG, 
             'red', attrs=['bold'])
 
-NUM_WORDS = 10
-MIN_WLEN  = 3
+NUM_WORD_BARS = 10
+PREFIX_LEN  = 3
+
+MIN_NUM_TWEETS = 11
+NUM_MENTIONS = 25
 
 SVGFILE = '../MC3/maps/custom/neigh_labels.svg'
 SVGTEST = '../MC3/maps/mapa_vast_vetorizado.svg'
