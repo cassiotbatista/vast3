@@ -1,2 +1,6 @@
 clown
 circus
+colour
+party
+music
+healthcare
