@@ -21,6 +21,7 @@ from termcolor import cprint
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem import WordNetLemmatizer
 from textblob import TextBlob
+from multiprocessing import cpu_count, Parallel
 
 import time
 
@@ -77,7 +78,6 @@ def get_stopwords():
     with open(config.STOPWORDS_FILE) as f:
         for word in f:
             wordlist.append(word.rstrip())
-    print(wordlist)
     return wordlist
 
 def check_spell(text):
@@ -101,8 +101,12 @@ def normalise(data):
     data.message = data.message.str.replace(r'[=!?,.;\-$"\*/)(><\']', ' ')
     data.message = data.message.str.replace(r'([qwyuiahjkxv])\1+', r'\1')
     data.message = data.message.str.replace(r'(.)\1{2,}',r'\1\1')
-    data.message = data.message.str.replace(r'\b\w{0,1}\b', '')
-    data.message = data.message.str.replace(r'\b(\w+)( \1\b)+', r'\1')
+    #data.message = data.message.str.replace(r'\b\w{0,1}\b', '')
+    data.message = data.message.str.replace('re:', 'reply:')
+    #data.message = data.message.str.replace(r'\b[^\W:]{0,1}\b', '')
+    data.message = data.message.str.replace(r'\b\w{0,2}\b', '')
+    #data.message = data.message.str.replace(r'(\w)\1+', r'\1')
+    #data.message = data.message.str.replace(r'\b(\w+)( \1\b)+', r'\1')
     return data
 
 def stringify(data):
@@ -116,6 +120,14 @@ def lowercase(data):
         if col != 'time':
             data[col] = data[col].str.lower()
     return data
+
+#def parallelize(data, func):
+#        data_split = np.array_split(data, cpu_count())
+#        pool = Pool(cpu_count())
+#        data = pd.concat(pool.map(func, data_split))
+#        pool.close()
+#        pool.join()
+#        return data
 
 def preprocess(data):
     cprint('%s: converting message column to str' % TAG, 
