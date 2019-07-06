@@ -44,8 +44,6 @@ TAG = 'VASTGUI'
 data             = data_handler.load_data()
 useful_wordlist  = data_handler.get_useful_words()
 useless_wordlist = data_handler.get_useless_words()
-keywords         = data_handler.get_keywords()
-#blackusers       = data_handler.get_black_users() # TODO
 
 mapper = linear_cmap(field_name='right', palette=Spectral6, low=0, high=1)
 
@@ -126,14 +124,12 @@ def count_words(prefix_count, wword_count):
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
         if location.startswith('unk') or location.startswith('<loc'):
             continue
-        if not isinstance(tweet, str):
-            continue
         for word in tweet.split():
             if word.startswith('@') or word.count(':') > 1:
                 continue
             word = re.sub('[:]', '', word)
-            if len(word) > config.MIN_WLEN:
-                prefix = word[:config.MIN_WLEN+1]
+            if len(word) > config.PREFIX_LEN:
+                prefix = word[:config.PREFIX_LEN+1]
                 if prefix in useless_wordlist:
                     continue
                 if not prefix in prefix_count[location]:
@@ -152,20 +148,18 @@ def count_users():
     global user_tweet_freq
     cprint('%s: counting @ users...' % TAG, 'yellow', attrs=['bold'])
     user_count = data.account.value_counts()
-    user_count = user_count[user_count.between(30, user_count.max())]
+    user_count = user_count[user_count.between(config.MIN_NUM_TWEETS, user_count.max())]
     cprint('%s: counting words tweeted by user...' % TAG, 'yellow', attrs=['bold'])
     for user, freq in user_count.items():
         if not user in user_tweet_freq:
             user_tweet_freq[user] = {}
         for tweet in data[data.account == user].message:
-            if not isinstance(tweet, str):
-                continue
             for word in tweet.split():
                 if word.startswith('@') or word.count(':') > 1:
                     continue
                 word = re.sub('[:]', '', word)
-                if len(word) > config.MIN_WLEN:
-                    prefix = word[:config.MIN_WLEN+1]
+                if len(word) > config.PREFIX_LEN:
+                    prefix = word[:config.PREFIX_LEN+1]
                     if not prefix in user_tweet_freq[user]:
                         user_tweet_freq[user][prefix]  = 1
                     else:
@@ -176,21 +170,21 @@ def count_mentions():
     cprint('%s: counting @ mentions...' % TAG, 'yellow', attrs=['bold'])
     mention_count = OrderedDict()
     for tweet in data['message']:
-        if isinstance(tweet, str):
-            for word in tweet.split():
-                if word.startswith('@'):
-                    if word in mention_count.keys():
-                        mention_count[word] += 1
-                    else:
-                        mention_count[word] = 1
-    return sorted(mention_count.items(), key=lambda kv: kv[1], reverse=True)[:25]
+        for word in tweet.split():
+            if word.startswith('@'):
+                if word in mention_count.keys():
+                    mention_count[word] += 1
+                else:
+                    mention_count[word] = 1
+    return sorted(mention_count.items(), 
+            key=lambda kv: kv[1], reverse=True)[:config.NUM_MENTIONS]
 
 def get_freq_range(prefix_count):
     frequencies = []
     for wordcountdict in prefix_count.values():
         wordfreqlist = sorted(wordcountdict.items(), 
                     key=lambda kv: kv[1], reverse=True)
-        for word, freq in wordfreqlist[:config.NUM_WORDS]:
+        for word, freq in wordfreqlist[:config.NUM_WORD_BARS]:
             frequencies.append(freq)
     return min(frequencies), max(frequencies)
 
@@ -292,13 +286,13 @@ def init_plot():
     color_bar.ticker = FixedTicker(ticks=np.linspace(min_freq, 
                     max_freq, steps, dtype=np.int))
 
-    y = np.arange(config.NUM_WORDS)
+    y = np.arange(config.NUM_WORD_BARS)
     for i, (neigh,wcount) in enumerate(prefix_count.items()):
         wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
         x = []
         prefixes = []
         wlist = []
-        for prefix, freq in wordfreqlist[:config.NUM_WORDS]:
+        for prefix, freq in wordfreqlist[:config.NUM_WORD_BARS]:
             x.append(freq)
             prefixes.append(prefix)
             wlist.append([' %s:%d' % (k,v) \
@@ -366,7 +360,7 @@ def update():
     color_bar.ticker = FixedTicker(ticks=np.linspace(min_freq, 
                     max_freq, steps, dtype=np.int))
 
-    y = np.arange(config.NUM_WORDS)
+    y = np.arange(config.NUM_WORD_BARS)
     for i, (neigh,wcount) in enumerate(prefix_count.items()):
         if len(wcount) == 0:
             wcount = { 'none': 1 }
@@ -374,7 +368,7 @@ def update():
         x = []
         prefixes = []
         wlist = []
-        for prefix, freq in wordfreqlist[:config.NUM_WORDS]:
+        for prefix, freq in wordfreqlist[:config.NUM_WORD_BARS]:
             x.append(freq)
             prefixes.append(prefix)
             wlist.append([' %s:%d' % (k,v) \
