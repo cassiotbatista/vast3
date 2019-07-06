@@ -21,7 +21,7 @@ from termcolor import cprint
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem import WordNetLemmatizer
 from textblob import TextBlob
-from multiprocessing import cpu_count, Parallel
+from multiprocessing import cpu_count, Pool
 
 import time
 
@@ -80,6 +80,10 @@ def get_stopwords():
             wordlist.append(word.rstrip())
     return wordlist
 
+def parallel_spell(data):
+    data = data.apply(check_spell)
+    return data
+
 def check_spell(text):
     global blob_count
     blob_count += 1
@@ -121,13 +125,13 @@ def lowercase(data):
             data[col] = data[col].str.lower()
     return data
 
-#def parallelize(data, func):
-#        data_split = np.array_split(data, cpu_count())
-#        pool = Pool(cpu_count())
-#        data = pd.concat(pool.map(func, data_split))
-#        pool.close()
-#        pool.join()
-#        return data
+def parallelize(data, func):
+        data_split = np.array_split(data, cpu_count()-1)
+        pool = Pool(cpu_count()-1)
+        data = pd.concat(pool.map(func, data_split))
+        pool.close()
+        pool.join()
+        return data
 
 def preprocess(data):
     cprint('%s: converting message column to str' % TAG, 
@@ -162,7 +166,8 @@ def preprocess(data):
         cprint('%s: checking spell (it may take a while...) ' % TAG, 
                 'green', attrs=['bold', 'blink'], end=' ')
         start = time.time()
-        data.message = data.message.apply(check_spell)
+        #data.message = data.message.apply(check_spell)
+        data.message = parallelize(data.message, parallel_spell)
         end = time.time()
         print('\t(%.2f seconds)' % (end - start))
     if config.DO_LEMMATIZE:
