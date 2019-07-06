@@ -24,6 +24,11 @@ if not DO_KW_SELECT:
     cprint('%s: all tweets will pass irrespective of the keywords defined' % TAG, 
             'red', attrs=['bold'])
 
+DO_BLACK_SELECT = True
+if not DO_BLACK_SELECT:
+    cprint('%s: all tweets will pass irrespective of who\'s tweeting' % TAG, 
+            'red', attrs=['bold'])
+
 NUM_WORDS = 10
 MIN_WLEN  = 3
 
@@ -31,9 +36,10 @@ SVGFILE = '../MC3/maps/custom/neigh_labels.svg'
 SVGTEST = '../MC3/maps/mapa_vast_vetorizado.svg'
 SVG_NODE_HIERARCHY = ['svg', 'g', 'path', 'text', 'tspan']
 
-DATA_SRC_CSVFILE   = '../MC3/data/YInt.csv'
-DATA_PROC_CSVFILE  = 'data/data.csv'
-REPLACE_FILE  = '../src/replace.txt'
-USELESS_FILE  = '../src/w_useless.txt'
-USEFUL_FILE   = '../src/w_useful.txt'
-KEYPREFS_FILE = '../src/keywords.txt'
+DATA_SRC_CSVFILE  = '../MC3/data/YInt.csv'
+DATA_PROC_CSVFILE = 'data/data.csv'
+REPLACE_FILE      = '../src/replace.txt'
+USELESS_FILE      = '../src/w_useless.txt'
+USEFUL_FILE       = '../src/w_useful.txt'
+KEYPREFS_FILE     = '../src/keywords.txt'
+BLACKLIST_FILE    = '../src/blacklist.txt'

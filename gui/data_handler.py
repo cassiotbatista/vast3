@@ -21,6 +21,8 @@ from termcolor import cprint
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem import WordNetLemmatizer
 
+import time
+
 import config
 
 TAG = 'DH'
@@ -51,6 +53,13 @@ def get_useful_words():
             wordlist.append(word)
     return wordlist
 
+def get_user_blacklist():
+    blacklist = []
+    with open(config.BLACKLIST_FILE) as f:
+        for user in f:
+            blacklist.append(user.strip('@'))
+    return blacklist
+
 def get_keywords():
     wordlist = []
     with open(config.KEYPREFS_FILE) as f:
@@ -71,7 +80,7 @@ def reduce_lengthening(data):
 
 def normalise(data):
     data['message'] = data.message.str.replace(r'[#!?,.;\-$"\*/)(><\']', ' ')
-    data['message'] = data.message.str.replace(r'([iauhy])\1+', r'\1')
+    data['message'] = data.message.str.replace(r'([qwyuiahjkxv])\1+', r'\1')
     return data
 
 def lowercase(data):
@@ -85,6 +94,10 @@ def preprocess(data):
     data['message'] = data.message.apply(str)
     cprint('%s: lowercasing text cols' % TAG, 'green', attrs=['bold'])
     data = lowercase(data)
+    if config.DO_BLACK_SELECT:
+        cprint('%s: selecting tweets by username' % TAG, 'green', attrs=['bold'])
+        blackgex = '|'.join(get_user_blacklist())
+        data = data[~data['account'].str.contains(blackgex)]
     cprint('%s: replacing wrong words' % TAG, 'green', attrs=['bold'])
     for wrong, correct in get_replace_rules():
         data['message'] = data['message'].str.replace(wrong, correct)
