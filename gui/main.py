@@ -62,13 +62,13 @@ word_sources    = []
 word_hbarglyphs = []
 
 user_barplot=Plot(title=None, 
-        plot_width=700, plot_height=500,
+        plot_width=650, plot_height=500,
         min_border=0, toolbar_location=None,
         tools=[HoverTool(tooltips=[('wlist', '@wlist')], 
             point_policy='follow_mouse')])
 
 mention_barplot=Plot(title=None, 
-        plot_width=650, plot_height=500,
+        plot_width=600, plot_height=500,
         min_border=0, toolbar_location=None)
 
 svg = SVG()
@@ -109,7 +109,8 @@ def init_wordcount():
     prefix_count = OrderedDict()
     wword_count  = OrderedDict()
     for location in data.location.unique():
-        if location.startswith('unk') or location.startswith('<loc'):
+        if location.startswith('unk') or location.startswith('<loc') \
+                or location.startswith('wilson'):
             continue
         prefix_count[location] = {}
         wword_count[location] = {}
@@ -122,7 +123,8 @@ def count_words(prefix_count, wword_count):
     date_value = date_range_slider.value_as_datetime
     data_chunk = data[data.time.between(date_value[0], date_value[1])]
     for location, tweet in zip(data_chunk.location, data_chunk.message): 
-        if location.startswith('unk') or location.startswith('<loc'):
+        if location.startswith('unk') or location.startswith('<loc') \
+                or location.startswith('wilson'):
             continue
         for word in tweet.split():
             if word.startswith('@') or word.count(':') > 1:
@@ -364,6 +366,7 @@ def update():
     for i, (neigh,wcount) in enumerate(prefix_count.items()):
         if len(wcount) == 0:
             wcount = { 'none': 1 }
+
         wordfreqlist = sorted(wcount.items(), key=lambda kv: kv[1], reverse=True)
         x = []
         prefixes = []

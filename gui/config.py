@@ -43,7 +43,7 @@ NUM_WORD_BARS = 10
 PREFIX_LEN  = 3
 
 MIN_NUM_TWEETS = 11
-NUM_MENTIONS = 25
+NUM_MENTIONS = 22
 
 SVGFILE = '../MC3/maps/custom/neigh_labels.svg'
 SVGTEST = '../MC3/maps/mapa_vast_vetorizado.svg'
