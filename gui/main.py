@@ -23,8 +23,8 @@ from sklearn.preprocessing import minmax_scale
   
 from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, \
-                            FixedTicker, HoverTool, Slider, RangeTool, Range1d
-from bokeh.models.widgets import DateRangeSlider, Button, Div
+            FixedTicker, HoverTool, Slider, RangeTool, Range1d
+from bokeh.models.widgets import DateRangeSlider, Button, Div, Select
 from bokeh.models.layouts import Row, Column
 from bokeh.models.glyphs import HBar, VBar
 from bokeh.models.annotations import Title
@@ -44,6 +44,7 @@ TAG = 'VASTGUI'
 data             = data_handler.load_data()
 useful_wordlist  = data_handler.get_useful_words()
 useless_wordlist = data_handler.get_useless_words()
+keywords         = data_handler.get_keywords()
 
 mapper = linear_cmap(field_name='right', palette=Spectral6, low=0, high=1)
 
@@ -117,6 +118,16 @@ def init_wordcount():
 
 init_wordcount()
 init_word_barplots()
+
+def ridge(category, data=None, scale=1.0):
+    return list(zip([category]*len(data), scale*data))
+
+keyword_select = Select(title='Keyword prefix:', value='', options=keywords)
+neigh_horizonplot=figure(title='Keyword prefices peaks over time',
+        x_range=(data.index[0], data.index[-1]), 
+        y_range=[neigh.title() for neigh in prefix_count.keys()] + [''], 
+        plot_width=95*(len(word_barplots)-1)+40, plot_height=900,
+        toolbar_location='left')
 
 def count_words(prefix_count, wword_count):
     cprint('%s: counting words...' % TAG, 'yellow', attrs=['bold'])
@@ -427,11 +438,17 @@ arroba_layout = Row(children=[
     ghost_fig, svg_layout, user_barplot, mention_barplot, 
 ])
 
+horizon_layout = Column(children=[
+        keyword_select,
+        neigh_horizonplot,
+    ])
+
 main_layout = Row(children=[
     Column(children=[ 
         grid, 
         bottom_layout, 
         arroba_layout,
+        horizon_layout,
     ]),
 ])
 
