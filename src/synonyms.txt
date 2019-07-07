@@ -1,4 +1,4 @@
-powe nucl plan elec ener reac radi 
+powe nucl plan elec ener reac radi
 road brid
 medi hosp ambu
 buil stru
