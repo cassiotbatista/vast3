@@ -20,6 +20,7 @@ import numpy as np
 from collections import OrderedDict
 from termcolor import cprint
 from sklearn.preprocessing import minmax_scale
+from datetime import datetime, timedelta
   
 from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, \
@@ -31,7 +32,7 @@ from bokeh.models.annotations import Title
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure
 
-from bokeh.palettes import Spectral6
+from bokeh.palettes import Spectral6, Category20_19
 from bokeh.transform import linear_cmap
 
 import config
@@ -45,6 +46,10 @@ data             = data_handler.load_data()
 useful_wordlist  = data_handler.get_useful_words()
 useless_wordlist = data_handler.get_useless_words()
 keywords         = data_handler.get_keywords()
+horizon_data     = data_handler.load_horizon_data()
+horizon_data.vect = horizon_data.vect.apply(np.array)
+
+full_time_range = np.array(data.time, dtype='datetime64[s]')
 
 mapper = linear_cmap(field_name='right', palette=Spectral6, low=0, high=1)
 
@@ -57,7 +62,6 @@ prefix_count    = OrderedDict()
 wword_count     = OrderedDict()
 user_count      = OrderedDict()
 mention_count   = OrderedDict()
-horizon_count   = OrderedDict()
 
 word_barplots   = []
 word_sources    = []
@@ -123,25 +127,26 @@ init_word_barplots()
 def ridge(category, data=None, scale=1.0):
     return list(zip([category]*len(data), scale*data))
 
-def count_horizon(attr, old, new):
-    global horizon_count
+def update_horizon(attr, old, new):
+    horizon_source = ColumnDataSource(dict(x=full_time_range,))
     prefix = keyword_select.value
-    horizon_count = OrderedDict.fromkeys(prefix_count.keys(), {prefix: 0}) # XXX
-    for location, tweet in zip(data.location, data.message): 
-        if location.startswith('unk') or location.startswith('<loc') \
-                or location.startswith('wilson'):
-            continue
-        for word in tweet.split():
-            if word.startswith(prefix):
-                horizon_count[location][prefix] += 1
+    for i, neigh in enumerate(prefix_count.keys()):
+        print(neigh.title())
+        vector = horizon_data.vect.loc[(horizon_data.location == neigh) & \
+                    (horizon_data.keyword == prefix)].values[0].replace('[','').replace(']','')
+        vector = np.fromstring(vector, dtype=int, sep=' ')
+        y = ridge(neigh.title(), vector)
+        horizon_source.add(y, neigh)
+        neigh_horizonplot.patch('x', neigh, color=Category20_19[i],
+                alpha=0.5, line_color='black', source=horizon_source)
 
 keyword_select = Select(title='Keyword prefix:', width=145,
         value='', options=keywords)
-keyword_select.on_change('value', count_horizon)
+keyword_select.on_change('value', update_horizon)
 neigh_horizonplot=figure(title='Keyword prefices peaks over time',
-        x_range=(data.index[0], data.index[-1]), 
+        x_range=(data.time.iloc[0], data.time.iloc[-1]),
         y_range=[neigh.title() for neigh in prefix_count.keys()] + [''], 
-        plot_width=95*(len(word_barplots)-1)+40, plot_height=900,
+        plot_width=95*(len(word_barplots)-1)+40, plot_height=600,
         toolbar_location='left')
 
 def count_words(prefix_count, wword_count):
