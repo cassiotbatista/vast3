@@ -470,4 +470,4 @@ main_layout = Row(children=[
 init_plot()  # initial load of the data
 
 curdoc().add_root(main_layout)
-curdoc().title = 'VAST Cassio, Edwin, Erick'
+curdoc().title = 'VAST 3 by Cassio, Edwin, Erick & Larissa'
