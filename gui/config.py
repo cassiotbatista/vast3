@@ -51,6 +51,7 @@ SVG_NODE_HIERARCHY = ['svg', 'g', 'path', 'text', 'tspan']
 
 DATA_SRC_CSVFILE  = '../MC3/data/YInt.csv'
 DATA_PROC_CSVFILE = 'data/data.csv'
+DATA_HORIZ_CSVFILE = 'data/out.csv'
 REPLACE_FILE      = '../src/replace.txt'
 USELESS_FILE      = '../src/w_useless.txt'
 USEFUL_FILE       = '../src/w_useful.txt'
