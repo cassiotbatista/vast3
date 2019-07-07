@@ -12,16 +12,19 @@
 
 import sys
 import pandas as pd
-import numpy as np
 pd.set_option('display.max_rows', None)  
 pd.set_option('display.max_colwidth', -1)
 pd.set_option('display.max_columns', None) 
+import numpy as np
+np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
 from termcolor import cprint
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem import WordNetLemmatizer
 from textblob import TextBlob
 from multiprocessing import cpu_count, Pool
+from datetime import datetime, timedelta
+from collections import OrderedDict
 
 import time
 
@@ -33,6 +36,42 @@ lemmatizer = WordNetLemmatizer()
 
 blob_count  = 0
 lemma_count = 0
+
+def set_wcount_time():
+    cprint('%s: loading data from "%s"' % (TAG, config.DATA_PROC_CSVFILE), 
+            'green', attrs=['bold'])
+    data = pd.read_csv(config.DATA_PROC_CSVFILE, parse_dates=['time'])
+    data = stringify(data)
+    keywords = get_keywords()
+    wcount_vec = OrderedDict()
+    df = pd.DataFrame(columns=['location','keyword','vector'])
+    full_time_range = np.array(data.time, dtype='datetime64[s]')
+    print('counting.......')
+    for index, timestamp, location, account, tweet in data.itertuples():
+        if location.startswith('unk') or location.startswith('<loc') \
+                or location.startswith('wilson'):
+            continue
+        if location not in wcount_vec:
+            wcount_vec[location] = OrderedDict()
+        sys.stdout.write('\r%06d' % index)
+        sys.stdout.flush()
+        for prefix in keywords:
+            for word in tweet.split():
+                if word.startswith(prefix):
+                    if prefix not in wcount_vec[location]:
+                        wcount_vec[location][prefix] = np.zeros(len(full_time_range), dtype=np.int32)
+                    position = np.where(full_time_range == timestamp)[0][0]
+                    wcount_vec[location][prefix][position] += 1
+    print()
+    print('saindoo')
+    for location, value in wcount_vec.items():
+        print(location)
+        for kw, vec in value.items():
+            df = df.append(pd.DataFrame([[location, kw, np.array2string(vec)]], 
+                columns=['location','keyword','vector']))
+    print('escrevendo')
+    with open('out.csv','w') as f:
+        df.to_csv(f, index=False, quoting=1)
 
 def get_replace_rules():
     rules = {}
@@ -178,6 +217,11 @@ def preprocess(data):
         end = time.time()
         print('\t(%.2f seconds)' % (end - start))
     return data
+
+def load_horizon_data():
+    cprint('%s: loading data from "%s"' % (TAG, config.DATA_HORIZ_CSVFILE), 
+            'green', attrs=['bold'])
+    return pd.read_csv(config.DATA_HORIZ_CSVFILE)
 
 def load_data():
     cprint('%s: loading data from "%s"' % (TAG, config.DATA_PROC_CSVFILE), 
