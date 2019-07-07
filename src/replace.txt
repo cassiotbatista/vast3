@@ -35,3 +35,5 @@ thgat t
 towords t
 peaple p
 htey t
+meneom m
+somene s
