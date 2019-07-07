@@ -11,10 +11,13 @@
 # erick campos   - 
 
 import sys
+import os
+
 import pandas as pd
 pd.set_option('display.max_rows', None)  
 pd.set_option('display.max_colwidth', -1)
 pd.set_option('display.max_columns', None) 
+
 import numpy as np
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
@@ -31,6 +34,7 @@ import time
 import config
 
 TAG = 'DH'
+
 tokenizer  = WhitespaceTokenizer()
 lemmatizer = WordNetLemmatizer()
 
@@ -72,6 +76,11 @@ def set_wcount_time():
     print('escrevendo')
     with open('out.csv','w') as f:
         df.to_csv(f, index=False, quoting=1)
+
+def get_pref_syncluster():
+    with open(config.SYNCLUSTER_FILE) as f:
+        clusters = f.read().splitlines()
+    return cluster
 
 def get_replace_rules():
     rules = {}
