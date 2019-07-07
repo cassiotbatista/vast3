@@ -57,6 +57,7 @@ prefix_count    = OrderedDict()
 wword_count     = OrderedDict()
 user_count      = OrderedDict()
 mention_count   = OrderedDict()
+horizon_count   = OrderedDict()
 
 word_barplots   = []
 word_sources    = []
@@ -122,7 +123,21 @@ init_word_barplots()
 def ridge(category, data=None, scale=1.0):
     return list(zip([category]*len(data), scale*data))
 
-keyword_select = Select(title='Keyword prefix:', value='', options=keywords)
+def count_horizon(attr, old, new):
+    global horizon_count
+    prefix = keyword_select.value
+    horizon_count = OrderedDict.fromkeys(prefix_count.keys(), {prefix: 0}) # XXX
+    for location, tweet in zip(data.location, data.message): 
+        if location.startswith('unk') or location.startswith('<loc') \
+                or location.startswith('wilson'):
+            continue
+        for word in tweet.split():
+            if word.startswith(prefix):
+                horizon_count[location][prefix] += 1
+
+keyword_select = Select(title='Keyword prefix:', width=145,
+        value='', options=keywords)
+keyword_select.on_change('value', count_horizon)
 neigh_horizonplot=figure(title='Keyword prefices peaks over time',
         x_range=(data.index[0], data.index[-1]), 
         y_range=[neigh.title() for neigh in prefix_count.keys()] + [''], 
