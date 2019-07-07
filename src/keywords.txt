@@ -14,7 +14,7 @@ disa: disaster disasters
 eart: earthquake earthquakes earthqwake earthqwakes
 elec: electric electric electrician electricity
 emer: emergency
-enee: energy
+ener: energy
 evac: evacuate evacuation
 haza: hazard
 heal: health
