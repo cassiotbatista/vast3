@@ -22,9 +22,9 @@ from termcolor import cprint
 from sklearn.preprocessing import minmax_scale
 from datetime import datetime, timedelta
   
-from bokeh.io import curdoc
+from bokeh.io import curdoc, export_png
 from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, \
-            FixedTicker, HoverTool, Slider, RangeTool, Range1d
+            FixedTicker, HoverTool, Slider
 from bokeh.models.widgets import DateRangeSlider, Button, Div, Select
 from bokeh.models.layouts import Row, Column
 from bokeh.models.glyphs import HBar, VBar
@@ -91,6 +91,9 @@ ghost_fig.add_layout(color_bar, 'right')
 user_tweet_freq    = OrderedDict()
 mention_tweet_freq = OrderedDict()
 
+def hbar_callback():
+    export_png(grid, filename='hbar.png')
+
 def init_word_barplots():
     global word_barplots
     global word_sources
@@ -101,7 +104,7 @@ def init_word_barplots():
         plt = Plot(title=None, plot_width=95, plot_height=300,
                 min_border=0, toolbar_location=None,
                 tools=[HoverTool(tooltips=[ ('wlist','@wlist')], 
-                    point_policy='follow_mouse')])
+                        point_policy='follow_mouse')])
         word_barplots.append(plt)
         word_sources.append(src)
         plt = Plot(title=None, plot_width=60, plot_height=300, 
@@ -431,7 +434,21 @@ def update():
     svg_layout.children.pop()
     svg_layout.children.append(svg_div)
 
-grid = gridplot([ word_barplots ])
+save_button = Button(
+        label       = 'S', 
+        width       = 20,
+        height      = 270,
+        orientation = 'vertical',
+        button_type = 'primary')
+save_button.on_click(hbar_callback)
+
+grid = gridplot(children=[ 
+        word_barplots,
+    ], toolbar_location=None, merge_tools=True)
+
+hbar_row = Row(children=[
+        save_button, grid
+    ])
 
 date_range_slider = DateRangeSlider(
         start  = data['time'].iloc[0],
@@ -465,7 +482,8 @@ horizon_layout = Column(children=[
 
 main_layout = Row(children=[
     Column(children=[ 
-        grid, 
+        #grid, 
+        hbar_row,
         bottom_layout, 
         arroba_layout,
         horizon_layout,
