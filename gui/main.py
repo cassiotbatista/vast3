@@ -80,9 +80,6 @@ mention_barplot=Plot(title=None,
 svg = SVG()
 svg.rescale(0.45)
 svg_div    = Div(text=svg.to_string(), width=100, height=100)
-svg_figure = figure(title='St Himark Map', title_location='below',
-        toolbar_location=None, name='map', plot_height=500, plot_width=400,
-        tooltips=[('(x,y)','($x,$y)'), ('index','$index')])
 
 ghost_fig = figure(title=None, plot_width=60, plot_height=400,
             min_border=0, toolbar_location=None)
@@ -469,7 +466,7 @@ bottom_layout = Row(children=[
     date_range_slider, play_button,
 ])
 
-svg_layout = Row(svg_figure, width=450)
+svg_layout = Row(svg_div, width=450)
 
 arroba_layout = Row(children=[
     ghost_fig, svg_layout, user_barplot, mention_barplot, 
