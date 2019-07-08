@@ -79,7 +79,7 @@ mention_barplot=Plot(title=None,
 
 svg = SVG()
 svg.rescale(0.45)
-svg_div    = Div(text=svg.to_string(), width=100, height=100)
+svg_div = Div(text=svg.to_string(), width=100, height=100)
 
 ghost_fig = figure(title=None, plot_width=60, plot_height=400,
             min_border=0, toolbar_location=None)
@@ -90,6 +90,9 @@ mention_tweet_freq = OrderedDict()
 
 def hbar_callback():
     export_png(grid, filename='hbar.png')
+    export_png(user_barplot, filename='user.png')
+    export_png(mention_barplot, filename='mention.png')
+    export_png(svg_layout, filename='map.png')
 
 def init_word_barplots():
     global word_barplots
@@ -432,9 +435,9 @@ def update():
     svg_layout.children.append(svg_div)
 
 save_button = Button(
-        label       = 'S', 
-        width       = 20,
-        height      = 270,
+        label       = 'Save all plots motherfucker', 
+        width       = 100,
+        height      = 50,
         orientation = 'vertical',
         button_type = 'primary')
 save_button.on_click(hbar_callback)
@@ -442,10 +445,6 @@ save_button.on_click(hbar_callback)
 grid = gridplot(children=[ 
         word_barplots,
     ], toolbar_location=None, merge_tools=True)
-
-hbar_row = Row(children=[
-        save_button, grid
-    ])
 
 date_range_slider = DateRangeSlider(
         start  = data['time'].iloc[0],
@@ -466,7 +465,7 @@ bottom_layout = Row(children=[
     date_range_slider, play_button,
 ])
 
-svg_layout = Row(svg_div, width=450)
+svg_layout = Row(svg_div, width=450, height=380)
 
 arroba_layout = Row(children=[
     ghost_fig, svg_layout, user_barplot, mention_barplot, 
@@ -479,11 +478,11 @@ horizon_layout = Column(children=[
 
 main_layout = Row(children=[
     Column(children=[ 
-        #grid, 
-        hbar_row,
+        grid, 
         bottom_layout, 
         arroba_layout,
         horizon_layout,
+        save_button,
     ]),
 ])
 
