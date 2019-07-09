@@ -2,9 +2,11 @@ from math import pi
 import pandas as pd
 
 from bokeh.io import show
-from bokeh.models import LinearColorMapper, BasicTicker, PrintfTickFormatter, ColorBar
+from bokeh.models import LinearColorMapper, BasicTicker, PrintfTickFormatter, \
+        ColorBar, ColumnDataSource
 from bokeh.plotting import figure
 from bokeh.sampledata.unemployment1948 import data
+from bokeh.palettes import Reds9
 
 data['Year'] = data['Year'].astype(str)
 data = data.set_index('Year')
@@ -17,9 +19,13 @@ months = list(data.columns)
 # reshape to 1D array or rates with a month and year for each row.
 df = pd.DataFrame(data.stack(), columns=['rate']).reset_index()
 
+
+df = ColumnDataSource
+
 # this is the colormap from the original NYTimes plot
-colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
-mapper = LinearColorMapper(palette=colors, low=df.rate.min(), high=df.rate.max())
+#colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
+Reds9.reverse()
+mapper = LinearColorMapper(palette=Reds9, low=df.rate.min(), high=df.rate.max())
 
 TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
 
@@ -42,7 +48,7 @@ p.rect(x="Year", y="Month", width=1, height=1,
        line_color=None)
 
 color_bar = ColorBar(color_mapper=mapper, major_label_text_font_size="5pt",
-                     ticker=BasicTicker(desired_num_ticks=len(colors)),
+                     ticker=BasicTicker(desired_num_ticks=len(Reds9)),
                      formatter=PrintfTickFormatter(format="%d%%"),
                      label_standoff=6, border_line_color=None, location=(0, 0))
 p.add_layout(color_bar, 'right')
