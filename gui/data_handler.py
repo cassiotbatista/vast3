@@ -34,6 +34,7 @@ import time
 import config
 
 TAG = 'DH'
+TIME_INTERVAL = 2 # in hours please
 
 tokenizer  = WhitespaceTokenizer()
 lemmatizer = WordNetLemmatizer()
@@ -44,12 +45,14 @@ lemma_count = 0
 def set_wcount_time():
     cprint('%s: loading data from "%s"' % (TAG, config.DATA_PROC_CSVFILE), 
             'green', attrs=['bold'])
-    data = pd.read_csv(config.DATA_PROC_CSVFILE, parse_dates=['time'])
-    data = stringify(data)
-    keywords = get_keywords()
+    data = stringify(pd.read_csv(config.DATA_PROC_CSVFILE, parse_dates=['time']))
+    keyclusters = get_pref_syncluster()
     wcount_vec = OrderedDict()
-    df = pd.DataFrame(columns=['location','keyword','vector'])
-    full_time_range = np.array(data.time, dtype='datetime64[s]')
+    full_time_range = np.arange(
+            data.time.iloc[0], 
+            data.time.iloc[-1] + timedelta(hours=TIME_INTERVAL, minutes=1), 
+            timedelta(hours=TIME_INTERVAL),
+            dtype='datetime64[h]')
     print('counting.......')
     for index, timestamp, location, account, tweet in data.itertuples():
         if location.startswith('unk') or location.startswith('<loc') \
@@ -68,6 +71,7 @@ def set_wcount_time():
                     wcount_vec[location][prefix][position] += 1
     print()
     print('saindoo')
+    df = pd.DataFrame(columns=['location','keyword','vector'])
     for location, value in wcount_vec.items():
         print(location)
         for kw, vec in value.items():
