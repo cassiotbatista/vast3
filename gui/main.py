@@ -133,14 +133,14 @@ def function_to_call(attr, old, new):
     global neigh_mapper
     keyword = keycluster_select.value.split()[0]
     neigh_heatmap.title.text = 'Keyword "%s" peaks over time' % keyword
-    neigh_source = ColumnDataSource(heatmap_data[heatmap_data.keyword==keyword])
+    neigh_source.data = heatmap_data[heatmap_data.keyword==keyword].to_dict(orient='list')
     neigh_mapper['transform'].low  = min(neigh_source.data['frequency']) 
     neigh_mapper['transform'].high = max(neigh_source.data['frequency']) 
 
 keycluster_select = Select(title='Keywords:', width=600,
         value=keyclusters[0], options=keyclusters)
 neigh_source=ColumnDataSource(heatmap_data[
-        heatmap_data.keyword==keycluster_select.value.split()[0]])
+        heatmap_data.keyword==keycluster_select.value.split()[0]].to_dict(orient='list'))
 keycluster_select.on_change('value', function_to_call)
 neigh_mapper=linear_cmap(field_name='frequency', palette=Reds9, 
         low= min(neigh_source.data['frequency']), 
@@ -151,7 +151,7 @@ neigh_heatmap=figure(
         y_range=list(reversed(config.NEIGHBOURHOODS)),
         plot_width=95*(len(word_barplots)-1)+40, plot_height=600,
         tools='hover,save,box_zoom,reset', toolbar_location='left',
-        tooltips=[('time','@time'), ('frequency', '@frequency')])
+        tooltips=[('location','@location'), ('time','@time'), ('frequency', '@frequency')])
 neigh_heatmap.grid.grid_line_color = None
 neigh_heatmap.axis.axis_line_color = None
 neigh_heatmap.axis.major_tick_line_color = None
