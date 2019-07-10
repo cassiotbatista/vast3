@@ -30,9 +30,11 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 
 ## Browsers
 - [Google Chrome](https://www.google.com/chrome/) (v75.0.3770.100)
+- [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/) (v67.0.4)     
 
 ## OS
 - Debian Stretch 9.9 :penguin:
+- Ubuntu 18.04.2 
 
 ## Instalation (Debian)
 ```bash
