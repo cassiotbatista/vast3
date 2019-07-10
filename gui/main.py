@@ -137,7 +137,6 @@ def function_to_call(attr, old, new):
     neigh_mapper['transform'].low  = min(neigh_source.data['frequency']) 
     neigh_mapper['transform'].high = max(neigh_source.data['frequency']) 
 
-        
 keycluster_select = Select(title='Keywords:', width=600,
         value=keyclusters[0], options=keyclusters)
 neigh_source=ColumnDataSource(heatmap_data[
@@ -161,6 +160,11 @@ neigh_heatmap.rect(x='time', y='location', width=1, height=1,
        source=neigh_source,
        fill_color=neigh_mapper,
        line_color=None)
+neigh_color_bar = ColorBar(
+        color_mapper = neigh_mapper['transform'], 
+        width        = 8,
+        location     = (0,0))
+neigh_heatmap.add_layout(neigh_color_bar, 'left')
 
 def count_words(prefix_count, wword_count):
     cprint('%s: counting words...' % TAG, 'yellow', attrs=['bold'])
