@@ -381,9 +381,7 @@ def init_plot():
         plt.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
         plt.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
-    svg_div = Div(text=svg.to_string(), width=100, height=100)
-    svg_layout.children.pop()
-    svg_layout.children.append(svg_div)
+    svg_div.text = svg.to_string()
 
 def update():
     cprint('%s: update barcharts per neighbourhood...' % TAG, 'yellow', attrs=['bold'])
@@ -445,9 +443,8 @@ def update():
         plt.xaxis.ticker = np.linspace(0, max(x), steps, dtype=np.int)[1:]
         
         plt.yaxis.major_label_overrides = { i : prefix for i, prefix in enumerate(prefixes) }
-    svg_div = Div(text=svg.to_string(), width=100, height=100)
-    svg_layout.children.pop()
-    svg_layout.children.append(svg_div)
+
+    svg_div.text = svg.to_string()
 
 save_button = Button(
         label       = 'Save all plots at once', 
