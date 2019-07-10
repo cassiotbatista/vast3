@@ -61,6 +61,7 @@ def set_wcount_time():
     print('counting.......')
     for cluster in keyclusters:
         cluster = cluster.split()
+        prefices = tuple([w[:config.PREFIX_LEN+2] for w in cluster])
         chunk_sizes = []
         for i, hour in enumerate(full_time_range[:-1]):
             start_time = full_time_range[i]
@@ -75,11 +76,10 @@ def set_wcount_time():
                         or location.startswith('wilson'):
                     continue
                 for word in tweet.split():
-                    if word.startswith(tuple(cluster[:config.PREFIX_LEN+1])):
+                    if word.startswith(prefices):
                         position = np.where(full_time_range == start_time)[0][0]
                         wcount_vec[location][cluster[0]][position] += 1
         sys.stdout.write('\n')
-    print()
     print('saindoo')
     df = pd.DataFrame(columns=['location', 'keyword', 'time', 'frequency'])
     for location, value in wcount_vec.items():
