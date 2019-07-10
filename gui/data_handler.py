@@ -34,7 +34,7 @@ import time
 import config
 
 TAG = 'DH'
-TIME_INTERVAL = 2 # in hours please
+TIME_INTERVAL = 1 # in hours please
 
 tokenizer  = WhitespaceTokenizer()
 lemmatizer = WordNetLemmatizer()
@@ -46,45 +46,56 @@ def set_wcount_time():
     cprint('%s: loading data from "%s"' % (TAG, config.DATA_PROC_CSVFILE), 
             'green', attrs=['bold'])
     data = stringify(pd.read_csv(config.DATA_PROC_CSVFILE, parse_dates=['time']))
-    keyclusters = get_pref_syncluster()
-    wcount_vec = OrderedDict()
+    keyclusters = get_synonym_cluster()
     full_time_range = np.arange(
             data.time.iloc[0], 
             data.time.iloc[-1] + timedelta(hours=TIME_INTERVAL, minutes=1), 
             timedelta(hours=TIME_INTERVAL),
             dtype='datetime64[h]')
+    wcount_vec = OrderedDict()
+    for neigh in config.NEIGHBOURHOODS:
+        wcount_vec[neigh] = OrderedDict()
+        for cluster in keyclusters:
+            word = cluster.split()[0]
+            wcount_vec[neigh][word] = np.zeros(len(full_time_range), dtype=np.int16)
     print('counting.......')
-    for index, timestamp, location, account, tweet in data.itertuples():
-        if location.startswith('unk') or location.startswith('<loc') \
-                or location.startswith('wilson'):
-            continue
-        if location not in wcount_vec:
-            wcount_vec[location] = OrderedDict()
-        sys.stdout.write('\r%06d' % index)
-        sys.stdout.flush()
-        for prefix in keywords:
-            for word in tweet.split():
-                if word.startswith(prefix):
-                    if prefix not in wcount_vec[location]:
-                        wcount_vec[location][prefix] = np.zeros(len(full_time_range), dtype=np.int32)
-                    position = np.where(full_time_range == timestamp)[0][0]
-                    wcount_vec[location][prefix][position] += 1
+    for cluster in keyclusters:
+        cluster = cluster.split()
+        chunk_sizes = []
+        for i, hour in enumerate(full_time_range[:-1]):
+            start_time = full_time_range[i]
+            end_time   = full_time_range[i+1]
+            chunk      = data[data.time.between(start_time, 
+                    end_time, inclusive=False)]
+            chunk_sizes.append(chunk.shape[0])
+            sys.stdout.write('\r%+10s %s' % (cluster[0], start_time))
+            sys.stdout.flush()
+            for index, timestamp, location, account, tweet in chunk.itertuples():
+                if location.startswith('unk') or location.startswith('<loc') \
+                        or location.startswith('wilson'):
+                    continue
+                for word in tweet.split():
+                    if word.startswith(tuple(cluster[:config.PREFIX_LEN+1])):
+                        position = np.where(full_time_range == start_time)[0][0]
+                        wcount_vec[location][cluster[0]][position] += 1
+        sys.stdout.write('\n')
     print()
     print('saindoo')
-    df = pd.DataFrame(columns=['location','keyword','vector'])
+    df = pd.DataFrame(columns=['location', 'keyword', 'time', 'frequency'])
     for location, value in wcount_vec.items():
-        print(location)
-        for kw, vec in value.items():
-            df = df.append(pd.DataFrame([[location, kw, np.array2string(vec)]], 
-                columns=['location','keyword','vector']))
+        for keyword, vector in value.items():
+            for i, frequency in enumerate(vector):
+                df = df.append(pd.DataFrame([
+                        [location, keyword, full_time_range[i], frequency]],
+                        columns=['location', 'keyword', 'time', 'frequency']))
     print('escrevendo')
-    with open('out.csv','w') as f:
+    with open(config.DATA_HEAT_CSVFILE, 'w') as f:
         df.to_csv(f, index=False, quoting=1)
 
-def get_pref_syncluster():
+def get_synonym_cluster():
     with open(config.SYNCLUSTER_FILE) as f:
         clusters = f.read().splitlines()
-    return cluster
+    return clusters
 
 def get_replace_rules():
     rules = {}
@@ -231,10 +242,10 @@ def preprocess(data):
         print('\t(%.2f seconds)' % (end - start))
     return data
 
-def load_horizon_data():
-    cprint('%s: loading data from "%s"' % (TAG, config.DATA_HORIZ_CSVFILE), 
+def load_heatmap_data():
+    cprint('%s: loading data from "%s"' % (TAG, config.DATA_HEAT_CSVFILE), 
             'green', attrs=['bold'])
-    return pd.read_csv(config.DATA_HORIZ_CSVFILE)
+    return pd.read_csv(config.DATA_HEAT_CSVFILE)
 
 def load_data():
     cprint('%s: loading data from "%s"' % (TAG, config.DATA_PROC_CSVFILE), 
