@@ -64,7 +64,7 @@ SVGFILE = os.path.join(ROOT_DIR, 'MC3', 'maps', 'custom', 'neigh_labels.svg')
 SVGTEST = os.path.join(ROOT_DIR, 'MC3', 'maps', 'mapa_vast_vetorizado.svg')
 
 DATA_PROC_CSVFILE = os.path.join(SRC_DIR, 'data', 'data.csv')
-DATA_HEAT_CSVFILE = os.path.join(SRC_DIR, 'data', 'out.csv')
+DATA_HEAT_CSVFILE = os.path.join(SRC_DIR, 'data', 'heat_freq.csv')
 DATA_SRC_CSVFILE  = os.path.join(ROOT_DIR, 'MC3', 'data', 'YInt.csv')
 REPLACE_FILE      = os.path.join(ROOT_DIR, 'src', 'replace.txt')
 USELESS_FILE      = os.path.join(ROOT_DIR, 'src', 'w_useless.txt')
