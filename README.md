@@ -32,7 +32,7 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 $ sudo apt-get install python3 python3-pip
 $ sudo -H pip3 install --upgrade pip
 $ sudo -H pip3 install --upgrade \
-    bokeh nltk pandas numpy termcolor sklearn textblob
+    bokeh nltk pandas numpy matplotlib termcolor sklearn textblob
 ```
 :warning: Node.js must be downloaded from browser, extracted and then manually 
 copied (with root permissions) to `/usr/bin`.
