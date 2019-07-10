@@ -10,9 +10,13 @@
 # edwin jueda    - 
 # erick campos   - 
 
+import os
 from termcolor import cprint
 
 TAG = 'cfg'
+
+SRC_DIR  = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.abspath(os.path.join(SRC_DIR, os.pardir))
 
 DO_LEMMATIZE = True
 if not DO_LEMMATIZE:
@@ -53,17 +57,17 @@ PREFIX_LEN  = 3
 MIN_NUM_TWEETS = 11
 NUM_MENTIONS = 22
 
-SVGFILE = '../MC3/maps/custom/neigh_labels.svg'
-SVGTEST = '../MC3/maps/mapa_vast_vetorizado.svg'
 SVG_NODE_HIERARCHY = ['svg', 'g', 'path', 'text', 'tspan']
+SVGFILE = os.path.join(ROOT_DIR, 'MC3', 'maps', 'custom', 'neigh_labels.svg')
+SVGTEST = os.path.join(ROOT_DIR, 'MC3', 'maps', 'mapa_vast_vetorizado.svg')
 
-DATA_SRC_CSVFILE  = '../MC3/data/YInt.csv'
-DATA_PROC_CSVFILE = 'data/data.csv'
-DATA_HEAT_CSVFILE = 'data/out.csv'
-REPLACE_FILE      = '../src/replace.txt'
-USELESS_FILE      = '../src/w_useless.txt'
-USEFUL_FILE       = '../src/w_useful.txt'
-KEYPREFS_FILE     = '../src/keywords.txt'
-BLACKLIST_FILE    = '../src/blacklist.txt'
-STOPWORDS_FILE    = '../src/stopwords.txt'
-SYNCLUSTER_FILE   = '../src/synonyms.txt'
+DATA_PROC_CSVFILE = os.path.join(SRC_DIR, 'data', 'data.csv')
+DATA_HEAT_CSVFILE = os.path.join(SRC_DIR, 'data', 'out.csv')
+DATA_SRC_CSVFILE  = os.path.join(ROOT_DIR, 'MC3', 'data', 'YInt.csv')
+REPLACE_FILE      = os.path.join(ROOT_DIR, 'src', 'replace.txt')
+USELESS_FILE      = os.path.join(ROOT_DIR, 'src', 'w_useless.txt')
+USEFUL_FILE       = os.path.join(ROOT_DIR, 'src', 'w_useful.txt')
+KEYPREFS_FILE     = os.path.join(ROOT_DIR, 'src', 'keywords.txt')
+BLACKLIST_FILE    = os.path.join(ROOT_DIR, 'src', 'blacklist.txt')
+STOPWORDS_FILE    = os.path.join(ROOT_DIR, 'src', 'stopwords.txt')
+SYNCLUSTER_FILE   = os.path.join(ROOT_DIR, 'src', 'synonyms.txt')
