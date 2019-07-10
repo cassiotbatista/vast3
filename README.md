@@ -34,7 +34,7 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 
 ## OS
 - Debian Stretch 9.9 :penguin:
-- Ubuntu 18.04.2 
+- Ubuntu Bionic 18.04.2 
 
 ## Instalation (Debian)
 ```bash
