@@ -24,7 +24,7 @@ from datetime import datetime, timedelta
   
 from bokeh.io import curdoc, export_png
 from bokeh.models import ColumnDataSource, Plot, LinearAxis, Grid, ColorBar, \
-            FixedTicker, HoverTool, Slider
+            FixedTicker, HoverTool
 from bokeh.models.widgets import DateRangeSlider, Button, Div, Select
 from bokeh.models.layouts import Row, Column
 from bokeh.models.glyphs import HBar, VBar
@@ -32,8 +32,9 @@ from bokeh.models.annotations import Title
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure
 
-from bokeh.palettes import Spectral6, Category20_19
 from bokeh.transform import linear_cmap
+from bokeh.palettes import Spectral6, Category20_19, Reds9
+Reds9.reverse()
 
 import config
 import data_handler 
@@ -42,14 +43,13 @@ from svg2 import SVG
 
 TAG = 'VASTGUI'
 
-data             = data_handler.load_data()
-useful_wordlist  = data_handler.get_useful_words()
-useless_wordlist = data_handler.get_useless_words()
-keywords         = data_handler.get_keywords()
-horizon_data     = data_handler.load_horizon_data()
-horizon_data.vect = horizon_data.vect.apply(np.array)
+data                = data_handler.load_data()
+useful_wordlist     = data_handler.get_useful_words()
+useless_wordlist    = data_handler.get_useless_words()
+keyclusters         = data_handler.get_synonym_cluster()
+heatmap_data        = data_handler.load_heatmap_data()
 
-full_time_range = np.array(data.time, dtype='datetime64[s]')
+full_time_range = list(heatmap_data.time.unique())
 
 mapper = linear_cmap(field_name='right', palette=Spectral6, low=0, high=1)
 
@@ -127,30 +127,32 @@ def init_wordcount():
 init_wordcount()
 init_word_barplots()
 
-def ridge(category, data=None, scale=1.0):
-    return list(zip([category]*len(data), scale*data))
+def function_to_call(attr, old, new):
+    print(keycluster_select.value)
 
-def update_horizon(attr, old, new):
-    horizon_source = ColumnDataSource(dict(x=full_time_range,))
-    prefix = keyword_select.value
-    for i, neigh in enumerate(prefix_count.keys()):
-        print(neigh.title())
-        vector = horizon_data.vect.loc[(horizon_data.location == neigh) & \
-                    (horizon_data.keyword == prefix)].values[0].replace('[','').replace(']','')
-        vector = np.fromstring(vector, dtype=int, sep=' ')
-        y = ridge(neigh.title(), vector)
-        horizon_source.add(y, neigh)
-        neigh_horizonplot.patch('x', neigh, color=Category20_19[i],
-                alpha=0.5, line_color='black', source=horizon_source)
-
-keyword_select = Select(title='Keyword prefix:', width=145,
-        value='', options=keywords)
-keyword_select.on_change('value', update_horizon)
-neigh_horizonplot=figure(title='Keyword prefices peaks over time',
-        x_range=(data.time.iloc[0], data.time.iloc[-1]),
-        y_range=[neigh.title() for neigh in prefix_count.keys()] + [''], 
+keycluster_select = Select(title='Keywords:', width=600,
+        value=keyclusters[0], options=keyclusters)
+neigh_source=ColumnDataSource(heatmap_data[
+        heatmap_data.keyword==keycluster_select.value.split()[0]])
+keycluster_select.on_change('value', function_to_call)
+neigh_mapper=linear_cmap(field_name='frequency', palette=Reds9, 
+        low= min(neigh_source.data['frequency']), 
+        high=max(neigh_source.data['frequency'])) 
+neigh_heatmap=figure(
+        title='Keyword "%s" peaks over time' % keycluster_select.value.split()[0],
+        x_range=full_time_range,
+        y_range=list(reversed(config.NEIGHBOURHOODS)),
         plot_width=95*(len(word_barplots)-1)+40, plot_height=600,
-        toolbar_location='left')
+        tools='hover,save,box_zoom,reset', toolbar_location='left',
+        tooltips=[('time','@time'), ('frequency', '@frequency')])
+neigh_heatmap.grid.grid_line_color = None
+neigh_heatmap.axis.axis_line_color = None
+neigh_heatmap.axis.major_tick_line_color = None
+neigh_heatmap.xaxis.major_label_orientation = np.pi / 3
+neigh_heatmap.rect(x='time', y='location', width=1, height=1,
+       source=neigh_source,
+       fill_color=neigh_mapper,
+       line_color=None)
 
 def count_words(prefix_count, wword_count):
     cprint('%s: counting words...' % TAG, 'yellow', attrs=['bold'])
@@ -471,9 +473,9 @@ arroba_layout = Row(children=[
     ghost_fig, svg_layout, user_barplot, mention_barplot, 
 ])
 
-horizon_layout = Column(children=[
-        keyword_select,
-        neigh_horizonplot,
+heatmap_layout = Column(children=[
+        keycluster_select,
+        neigh_heatmap,
     ])
 
 main_layout = Row(children=[
@@ -481,7 +483,7 @@ main_layout = Row(children=[
         grid, 
         bottom_layout, 
         arroba_layout,
-        horizon_layout,
+        heatmap_layout,
         save_button,
     ]),
 ])
