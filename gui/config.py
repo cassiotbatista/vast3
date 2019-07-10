@@ -39,6 +39,14 @@ if not DO_SPELLCHECK:
     cprint('%s: spell checking will be skipped to speed up the process' % TAG, 
             'red', attrs=['bold'])
 
+NEIGHBOURHOODS = [ 
+        'old town',    'northwest',   'palace hills',
+        'downtown',    'weston',      'easton',
+        'safe town',   'southwest',   'southton',
+        'west parton', 'east parton', 'oak willow',
+        'cheddarford', 'pepper mill', 'terrapin springs',
+        'broadview',   'chapparal',    'scenic vista', ]
+
 NUM_WORD_BARS = 10
 PREFIX_LEN  = 3
 
@@ -51,7 +59,7 @@ SVG_NODE_HIERARCHY = ['svg', 'g', 'path', 'text', 'tspan']
 
 DATA_SRC_CSVFILE  = '../MC3/data/YInt.csv'
 DATA_PROC_CSVFILE = 'data/data.csv'
-DATA_HORIZ_CSVFILE = 'data/out.csv'
+DATA_HEAT_CSVFILE = 'data/out.csv'
 REPLACE_FILE      = '../src/replace.txt'
 USELESS_FILE      = '../src/w_useless.txt'
 USEFUL_FILE       = '../src/w_useful.txt'
