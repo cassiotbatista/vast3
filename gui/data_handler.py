@@ -81,13 +81,13 @@ def set_wcount_time():
                         wcount_vec[location][cluster[0]][position] += 1
         sys.stdout.write('\n')
     print('saindoo')
-    df = pd.DataFrame(columns=['location', 'keyword', 'time', 'frequency'])
+    df = pd.DataFrame(columns=['location', 'keyword', 'frequency', 'time'])
     for location, value in wcount_vec.items():
         for keyword, vector in value.items():
             for i, frequency in enumerate(vector):
-                df = df.append(pd.DataFrame([
-                        [location, keyword, full_time_range[i], frequency]],
-                        columns=['location', 'keyword', 'time', 'frequency']))
+                df = df.append(pd.DataFrame([[location, keyword, frequency,
+                    full_time_range[i].tolist().strftime('%d/%m @ %Hh')]],
+                        columns=['location', 'keyword', 'frequency', 'time']))
     print('escrevendo')
     with open(config.DATA_HEAT_CSVFILE, 'w') as f:
         df.to_csv(f, index=False, quoting=1)
