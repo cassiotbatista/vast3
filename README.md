@@ -25,6 +25,7 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 - [scikit-learn](https://scikit-learn.org/stable/) (v0.20.2)
 - [Node.js](https://nodejs.org/en/download/) (v10.16.0)
 - [PhantomJS](https://phantomjs.org/) (v2.1.1) ([wget](https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2))
+- [Selenium](https://selenium-python.readthedocs.io/) (v3.141.0)
 - [termcolor](https://pypi.org/project/termcolor/) (v1.1.0)
 
 ## Browsers
