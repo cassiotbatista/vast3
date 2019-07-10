@@ -24,6 +24,7 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 - [word_cloud](https://github.com/amueller/word_cloud) (v1.5.0)
 - [scikit-learn](https://scikit-learn.org/stable/) (v0.20.2)
 - [Node.js](https://nodejs.org/en/download/) (v10.16.0)
+- [PhantomJS](https://phantomjs.org/) (v2.1.1) ([wget](https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2))
 - [termcolor](https://pypi.org/project/termcolor/) (v1.1.0)
 
 ## Browsers
@@ -37,10 +38,13 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 $ sudo apt-get install python3 python3-pip
 $ sudo -H pip3 install --upgrade pip
 $ sudo -H pip3 install --upgrade \
-    bokeh nltk pandas numpy matplotlib termcolor sklearn textblob wordcloud
+    bokeh nltk pandas numpy matplotlib termcolor sklearn textblob wordcloud selenium
 ```
-:warning: Node.js must be downloaded from browser, extracted and then manually 
-copied (with root permissions) to `/usr/bin`.
+:warning: **Node.js** must be downloaded from browser, extracted and then
+manually copied (with root permissions) to `/usr/bin`.
+
+:warning: **PhantomJS** must be downloaded from browser, extracted and then
+manually copied (with root permissions) to `/usr/bin`.
 
 ## Authors:
 - Ana Larissa Dias - larissa.engcomp@gmail.com
