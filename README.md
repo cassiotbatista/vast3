@@ -4,16 +4,10 @@ This repo hosts the answers to the
 version of the [VAST Challenge](https://vast-challenge.github.io/2019/).
 
 ## Execution Instructions
-
 ```bash
-$ bokeh serve --show grafico1/
+$ bokeh serve --show <DIR>
 ```
-
-and 
-
-```bash
-$ bokeh serve --show gui/
-```
+where `<DIR>` can be either `grafico1` or `gui/`.
 
 ## Tools and Libraries
 - [Python](https://www.python.org/downloads/) (v3.5.3)
@@ -22,6 +16,7 @@ $ bokeh serve --show gui/
 - [TextBlob](https://textblob.readthedocs.io/en/dev/) (v0.15.3)
 - [NumPy](https://www.numpy.org/) (v1.16.0)
 - [pandas](https://pandas.pydata.org/) (v0.24.2)
+- [Matplotlib](https://matplotlib.org/) (v3.0.2)
 - [scikit-learn](https://scikit-learn.org/stable/) (v0.20.2)
 - [termcolor](https://pypi.org/project/termcolor/) (v1.1.0)
 
