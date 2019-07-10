@@ -18,6 +18,8 @@ TAG = 'cfg'
 SRC_DIR  = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.abspath(os.path.join(SRC_DIR, os.pardir))
 
+IMG_DIR = os.path.join(SRC_DIR, 'images')
+
 DO_LEMMATIZE = True
 if not DO_LEMMATIZE:
     cprint('%s: lemmatize step will be skipped to speed up the process' % TAG, 
@@ -71,3 +73,9 @@ KEYPREFS_FILE     = os.path.join(ROOT_DIR, 'src', 'keywords.txt')
 BLACKLIST_FILE    = os.path.join(ROOT_DIR, 'src', 'blacklist.txt')
 STOPWORDS_FILE    = os.path.join(ROOT_DIR, 'src', 'stopwords.txt')
 SYNCLUSTER_FILE   = os.path.join(ROOT_DIR, 'src', 'synonyms.txt')
+
+HBAR_PNG    = os.path.join(IMG_DIR, 'hbar.png')
+USER_PNG    = os.path.join(IMG_DIR, 'user.png')
+MENTION_PNG = os.path.join(IMG_DIR, 'mention.png')
+SVGMAP_PNG  = os.path.join(IMG_DIR, 'map.png')
+HEATKW_PNG  = os.path.join(IMG_DIR, 'keyheatmap.png')

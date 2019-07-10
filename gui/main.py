@@ -88,11 +88,12 @@ ghost_fig.add_layout(color_bar, 'right')
 user_tweet_freq    = OrderedDict()
 mention_tweet_freq = OrderedDict()
 
-def hbar_callback():
-    export_png(grid, filename='hbar.png')
-    export_png(user_barplot, filename='user.png')
-    export_png(mention_barplot, filename='mention.png')
-    export_png(svg_layout, filename='map.png')
+def save_png_callback():
+    export_png(grid,            filename=config.HBAR_PNG)
+    export_png(user_barplot,    filename=config.USER_PNG)
+    export_png(mention_barplot, filename=config.MENTION_PNG)
+    export_png(svg_layout,      filename=config.SVGMAP_PNG)
+    export_png(heatmap_layout,  filename=config.HEATKW_PNG)
 
 def init_word_barplots():
     global word_barplots
@@ -449,12 +450,12 @@ def update():
     svg_layout.children.append(svg_div)
 
 save_button = Button(
-        label       = 'Save all plots motherfucker', 
+        label       = 'Save all plots at once', 
         width       = 100,
         height      = 50,
         orientation = 'vertical',
         button_type = 'primary')
-save_button.on_click(hbar_callback)
+save_button.on_click(save_png_callback)
 
 grid = gridplot(children=[ 
         word_barplots,
