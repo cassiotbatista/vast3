@@ -3,6 +3,10 @@ This repo hosts the tools that were exclusively built to answer the questions of
 the [3rd mini-challenge](https://vast-challenge.github.io/2019/MC3.html) of the 
 2019 version of the [VAST Challenge](https://vast-challenge.github.io/2019/).
 
+![1st tool](screenshots/grafico1.gif)
+
+![2nd tool](screenshots/grafico2.gif)
+
 ## Execution Instructions
 ```
 $ bokeh serve --show <DIR>
