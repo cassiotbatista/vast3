@@ -128,8 +128,16 @@ init_wordcount()
 init_word_barplots()
 
 def function_to_call(attr, old, new):
-    print(keycluster_select.value)
+    global neigh_heatmap
+    global neigh_source
+    global neigh_mapper
+    keyword = keycluster_select.value.split()[0]
+    neigh_heatmap.title.text = 'Keyword "%s" peaks over time' % keyword
+    neigh_source = ColumnDataSource(heatmap_data[heatmap_data.keyword==keyword])
+    neigh_mapper['transform'].low  = min(neigh_source.data['frequency']) 
+    neigh_mapper['transform'].high = max(neigh_source.data['frequency']) 
 
+        
 keycluster_select = Select(title='Keywords:', width=600,
         value=keyclusters[0], options=keyclusters)
 neigh_source=ColumnDataSource(heatmap_data[
