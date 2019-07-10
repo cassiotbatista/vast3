@@ -27,6 +27,16 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 ## OS
 - Debian Stretch 9.9
 
+## Instalation (Debian)
+```bash
+$ sudo apt-get install python3 python3-pip
+$ sudo -H pip3 install --upgrade pip
+$ sudo -H pip3 install --upgrade \
+    bokeh nltk pandas numpy termcolor sklearn textblob
+```
+NOTE: Node.js must be downloaded from browser, extracted and then manually 
+copied (with root permissions) to the `/usr/bin/` dir.
+
 ## Authors:
 - Ana Larissa Dias - xxx@gmail.com
 - Cassio Batista   - cassio.batista.13@gmail.com 
