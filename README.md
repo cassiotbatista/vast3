@@ -25,7 +25,7 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 - [Google Chrome](https://www.google.com/chrome/) (v75.0.3770.100)
 
 ## OS
-- Debian Stretch 9.9
+- Debian Stretch 9.9 :penguin:
 
 ## Instalation (Debian)
 ```bash
@@ -34,8 +34,8 @@ $ sudo -H pip3 install --upgrade pip
 $ sudo -H pip3 install --upgrade \
     bokeh nltk pandas numpy termcolor sklearn textblob
 ```
-NOTE: Node.js must be downloaded from browser, extracted and then manually 
-copied (with root permissions) to the `/usr/bin/` dir.
+:warning: Node.js must be downloaded from browser, extracted and then manually 
+copied (with root permissions) to `/usr/bin`.
 
 ## Authors:
 - Ana Larissa Dias - xxx@gmail.com
