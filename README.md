@@ -43,7 +43,7 @@ $ sudo -H pip3 install --upgrade \
 copied (with root permissions) to `/usr/bin`.
 
 ## Authors:
-- Ana Larissa Dias - xxx@gmail.com
+- Ana Larissa Dias - larissa.engcomp@gmail.com
 - Cassio Batista   - cassio.batista.13@gmail.com 
-- Edwin Rueda      - xxx@gmail.com
-- Erick Campos     - xxx@gmail.com
+- Edwin Rueda      - ejrueda95g@gmail.com
+- Erick Campos     - erick.c.modesto@gmail.com
