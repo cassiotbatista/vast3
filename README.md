@@ -21,6 +21,7 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 - [NumPy](https://www.numpy.org/) (v1.16.0)
 - [pandas](https://pandas.pydata.org/) (v0.24.2)
 - [Matplotlib](https://matplotlib.org/) (v3.0.2)
+- [word_cloud](https://github.com/amueller/word_cloud) (v1.5.0)
 - [scikit-learn](https://scikit-learn.org/stable/) (v0.20.2)
 - [Node.js](https://nodejs.org/en/download/) (v10.16.0)
 - [termcolor](https://pypi.org/project/termcolor/) (v1.1.0)
