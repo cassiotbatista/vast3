@@ -53,7 +53,7 @@ NEIGHBOURHOODS = [
         'cheddarford', 'pepper mill', 'terrapin springs',
         'broadview',   'chapparal',    'scenic vista', ]
 
-NUM_WORD_BARS = 10
+NUM_WORD_BARS = 15
 PREFIX_LEN  = 3
 
 MIN_NUM_TWEETS = 11
