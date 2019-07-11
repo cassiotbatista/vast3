@@ -5,3 +5,4 @@ medical hospital ambulance
 building structure
 sewer sewage water fire
 rain flood
+tsunami
