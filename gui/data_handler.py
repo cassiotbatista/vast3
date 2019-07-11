@@ -165,15 +165,20 @@ def lemmatize(text):
     return ' '.join(tokens)
 
 def normalise(data):
-    data.message = data.message.str.replace(r'[=!?,.;\-$"\*/)(><\']', ' ')
-    data.message = data.message.str.replace(r'([qwyuiahjkxv])\1+', r'\1')
-    data.message = data.message.str.replace(r'(.)\1{2,}',r'\1\1')
-    #data.message = data.message.str.replace(r'\b\w{0,1}\b', '')
-    data.message = data.message.str.replace('re:', 'reply:')
-    #data.message = data.message.str.replace(r'\b[^\W:]{0,1}\b', '')
-    data.message = data.message.str.replace(r'\b\w{0,2}\b', '')
-    #data.message = data.message.str.replace(r'(\w)\1+', r'\1')
-    #data.message = data.message.str.replace(r'\b(\w+)( \1\b)+', r'\1')
+    replace_rules = [
+        (r'[=!?,.;\-$"\*/)(><\']', ' '), # strip non-alphanum chars except @#:
+        (r'([qwyuiahjkxv])\1+', r'\1'),  # remove selected chars repeated
+        (r'(.)\1{2,}',r'\1\1'),          # set max num of char repetition to 2
+        #(r'\b\w{0,1}\b', ''),
+        ('re:', 'reply:'),               # FIXME gambiarra 1/2
+        #(r'\b[^\W:]{0,1}\b', ''),
+        (r'\b\w{0,2}\b', ''),            # strip words with length less then 3
+        #(r'(\w)\1+', r'\1'),
+        #(r'\b(\w+)( \1\b)+', r'\1'),
+        ('reply:', 're:'),               # FIXME gambiarra 2/2
+    ]
+    for patt, repl in replace_rules:
+        data.message = data.message.str.replace(patt, repl)
     return data
 
 def stringify(data):
@@ -188,9 +193,10 @@ def lowercase(data):
             data[col] = data[col].str.lower()
     return data
 
+# NOTE that will use all CPU cores
 def parallelize(data, func):
-        data_split = np.array_split(data, cpu_count()-1)
-        pool = Pool(cpu_count()-1)
+        data_split = np.array_split(data, cpu_count())
+        pool = Pool(cpu_count())
         data = pd.concat(pool.map(func, data_split))
         pool.close()
         pool.join()
@@ -229,7 +235,6 @@ def preprocess(data):
         cprint('%s: checking spell (it may take a while...) ' % TAG, 
                 'green', attrs=['bold', 'blink'], end=' ')
         start = time.time()
-        #data.message = data.message.apply(check_spell)
         data.message = parallelize(data.message, parallel_spell)
         end = time.time()
         print('\t(%.2f seconds)' % (end - start))
