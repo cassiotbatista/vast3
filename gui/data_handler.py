@@ -174,7 +174,7 @@ def normalise(data):
         #(r'\b[^\W:]{0,1}\b', ''),
         (r'\b\w{0,2}\b', ''),            # strip words with length less then 3
         #(r'(\w)\1+', r'\1'),
-        #(r'\b(\w+)( \1\b)+', r'\1'),
+        #(r'\b(\w+)( \1\b)+', r'\1'),    # remove repeated words
         ('reply:', 're:'),               # FIXME gambiarra 2/2
     ]
     for patt, repl in replace_rules:
