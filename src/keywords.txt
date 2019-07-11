@@ -8,7 +8,7 @@ dama: damage
 dang: dangerous
 dead: dead
 deat: death
-dest: destroy
+dest: destroy destruction
 die:  die
 disa: disaster disasters
 eart: earthquake earthquakes earthqwake earthqwakes
@@ -16,19 +16,24 @@ elec: electric electric electrician electricity
 emer: emergency
 ener: energy
 evac: evacuate evacuation
+fire: fire
+flood: flood
 haza: hazard
 heal: health
 help: help
+highw: highway
 hosp: hospital hospitals
 inci: incident
 medi: medical
 nucl: nuclear
 plan: plant
 powe: power powerlines
-prob: problem  problems
+prob: problem problems
 quak: quake
 quav: quaver
+quiv: quiver
 radi: radiation
+rain: rain
 reac: reactor
 repa: repair
 resc: rescue
@@ -41,9 +46,11 @@ sewa: sewage
 sewe: sewer
 shak: shake
 shud: shudder
+stre: street
 stru: structutral
 trag: tragedy
-trem: tremble
+trem: tremble tremor
+tsun: tsunami
 vibr: vibrate
 vict: victims
 wate: water
