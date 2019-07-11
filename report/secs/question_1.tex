@@ -48,11 +48,13 @@ color.
 
 \subsection{How resources should be allocated 5h after the earthquake?}
 
+iauheiuarhi aoe uageoi hroaineoh aueh ~\ref{fig:map_5h}
+
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.30\textwidth]{figs/cond_5h/cond_5h_svg.png}
-    \label{fig:map_5h}
     \caption{St. Himark's map 5h after the first earthquake.}
+    \label{fig:map_5h}
 \end{figure}
 
 Figure~\ref{fig:eq_cond_5h} shows the heatmap per keyword in a five-hour-time 
@@ -60,7 +62,8 @@ interval from 2:00~PM to 6:59~PM. The top shows 3 blank graphs for the keywords
 ``building'', ``medical'', and ``road'', which means these resources do not 
 appear to be requested by any neighbourhood. On the other hand, the 3 graphs at
 the bottom show the number of mentions for keywords related to 
-``sewer and water'', ``power'', and ``rain''. 
+``sewer and water'' (Figure~\ref{fig:sewer_5h}), 
+``power'' (Figure~\ref{fig:power_5h}), and ``rain'' (Figure~\ref{fig:rain_5h}). 
 
 \begin{figure}[!h]
     \centering
@@ -68,31 +71,37 @@ the bottom show the number of mentions for keywords related to
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_5h/cond_5h_build.png}
         \caption{Building}
+        \label{fig:build_5h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.32\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_5h/cond_5h_medical.png}
         \caption{Medical}
+        \label{fig:medical_5h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.32\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_5h/cond_5h_road.png}
         \caption{Roads and Bridges}
+        \label{fig:road_5h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.32\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_5h/cond_5h_sewer.png}
         \caption{Sewer and water}
+        \label{fig:sewer_5h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.32\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_5h/cond_5h_power.png}
         \caption{Power}
+        \label{fig:power_5h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.32\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_5h/cond_5h_rain.png}
         \caption{Rain}
+        \label{fig:rain_5h}
     \end{subfigure}
     \caption{Earthquake conditions after 5h}
     \label{fig:eq_cond_5h}
@@ -123,7 +132,7 @@ Suggestions for crew allocation is detailed as follows:
     therefore Southton is geographically in the middle of such neighbourhoods.
 \end{itemize}
 
-\newpage
+%\newpage
 
 \subsection{How resources should be allocated 30h after the earthquake?}
 Looking at the useful-words colormap over the SVG map of St. Hirmak, it can be
@@ -151,31 +160,37 @@ already working there.
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_30h/cond_30h_medical.png}
         \caption{Medical}
+        \label{fig:medical_30h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.48\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_30h/cond_30h_sewer.png}
         \caption{Sewer and water}
+        \label{fig:sewer_30h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.48\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_30h/cond_30h_rain.png}
         \caption{Rain}
+        \label{fig:rain_30h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.48\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_30h/cond_30h_road.png}
         \caption{Roads and Bridges}
+        \label{fig:roads_30h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.48\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_30h/cond_30h_build.png}
         \caption{Building}
+        \label{fig:building_30h}
     \end{subfigure}
     \begin{subfigure}[!h]{0.48\textwidth}
         \centering
         \includegraphics[width=1.00\textwidth]{figs/cond_30h/cond_30h_power.png}
         \caption{Power}
+        \label{fig:power_30h}
     \end{subfigure}
     \caption{Earthquake conditions after 30h}
     \label{fig:eq_cond_30h}
@@ -186,14 +201,16 @@ Suggestions for crew allocation is detailed as follows:
 \begin{itemize}
     \item \emph{Building}: On April 7th from 7:00~PM to 7:59~PM there have been
     multiple casualties on almost all locations so we would prioritize the
-    dark-red-colored ones according to the heatmap of Figure~\ref{fig:eita}:
+    dark-red-colored ones according to the heatmap of
+    Figure~\ref{fig:building_30h}:
     Northwest, Southton, Downtown, and Weston. All four have a high 
     density of buildings and people, apart from being geographically close to
     each other, which can be an advantage for an eventual reallocation of crews
     in the following hours. Terrapin Springs and Cheddarford also have some
     less-intense occurrences, but they must be ignored due to the absence of
     high buildings.
-    \item \emph{Power}: On April 7th there have been sporadic, less-intense
+    \item \emph{Power}: According to Figure~\ref{fig:power_30h} on April 7th 
+    there have been sporadic, less-intense
     occurrences that could be solved by sending small units to individual
     locations, but from 8:00~AM to 9:00~AM an energy disaster appear to have
     affected almost all neighbourhoods. Again we would prioritize regions where
