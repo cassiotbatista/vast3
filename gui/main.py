@@ -106,13 +106,13 @@ def init_word_barplots():
     word_sources  = []
     for i in range(len(prefix_count)):
         src = ColumnDataSource(dict(y=[], right=[], wlist=[],))
-        plt = Plot(title=None, plot_width=95, plot_height=300,
+        plt = Plot(title=None, plot_width=95, plot_height=400,
                 min_border=0, toolbar_location=None,
                 tools=[HoverTool(tooltips=[ ('wlist','@wlist')], 
                         point_policy='follow_mouse')])
         word_barplots.append(plt)
         word_sources.append(src)
-        plt = Plot(title=None, plot_width=60, plot_height=300, 
+        plt = Plot(title=None, plot_width=60, plot_height=400, 
                 min_border=0, toolbar_location = None)
     plt.add_layout(color_bar, 'right')
     word_barplots.append(plt)
@@ -154,13 +154,17 @@ neigh_heatmap=figure(
         title='Keyword "%s" peaks over time' % keycluster_select.value.split()[0],
         x_range=full_time_range,
         y_range=list(reversed(config.NEIGHBOURHOODS)),
-        plot_width=95*(len(word_barplots)-1)+40, plot_height=600,
+        plot_width=95*(len(word_barplots)-1)+40, plot_height=350,
         tools='hover,save,box_zoom,reset', toolbar_location='left',
         tooltips=[('location','@location'), ('time','@time'), ('frequency', '@frequency')])
 neigh_heatmap.grid.grid_line_color = None
 neigh_heatmap.axis.axis_line_color = None
 neigh_heatmap.axis.major_tick_line_color = None
 neigh_heatmap.xaxis.major_label_orientation = np.pi / 3
+for i in range(1, 6):
+    neigh_heatmap.line(x=[24*i,    24*i],    y=[0, 19], color='black')
+    neigh_heatmap.line(x=[24*i-12, 24*i-12], y=[0, 19], color='gray',
+            line_dash='dashed') 
 neigh_heatmap.rect(x='time', y='location', width=1, height=1,
        source=neigh_source,
        fill_color=neigh_mapper,
