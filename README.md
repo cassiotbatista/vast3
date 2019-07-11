@@ -8,10 +8,10 @@ the [3rd mini-challenge](https://vast-challenge.github.io/2019/MC3.html) of the
 ![2nd tool](screenshots/grafico2.gif)
 
 ## Execution Instructions
-```
+```bash
 $ bokeh serve --show <DIR>
 ```
-where `<DIR>` can be either `grafico1/` or `gui/`.
+where `<DIR>` can be either `grafico1/`, `grafico2/`or `gui/`.
 
 ## Tools and Libraries
 - [Python](https://www.python.org/downloads/) (v3.5.3)
@@ -33,21 +33,22 @@ where `<DIR>` can be either `grafico1/` or `gui/`.
 - [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/) (v67.0.4)     
 
 ## OS
-- Debian Stretch 9.9 :penguin:
-- Ubuntu Bionic 18.04.2 
+- :penguin: Debian Stretch 9.9 
+- :penguin: Ubuntu Bionic 18.04.2 
 
-## Instalation (Debian)
+## Installation (Debian)
 ```bash
 $ sudo apt-get install python3 python3-pip
 $ sudo -H pip3 install --upgrade pip
-$ sudo -H pip3 install --upgrade \
-    bokeh nltk pandas numpy matplotlib termcolor sklearn textblob wordcloud selenium
+$ sudo -H pip3 install --upgrade bokeh \
+    nltk pandas numpy matplotlib termcolor \
+    sklearn textblob wordcloud selenium
 ```
 :warning: **Node.js** must be downloaded from browser, extracted and then
-manually copied (with root permissions) to `/usr/bin`.
+manually copied to `/usr/bin`.
 
 :warning: **PhantomJS** must be downloaded from browser, extracted and then
-manually copied (with root permissions) to `/usr/bin`.
+manually copied to `/usr/bin`.
 
 ## Authors:
 - Ana Larissa Dias - larissa.engcomp@gmail.com
