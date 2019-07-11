@@ -89,11 +89,15 @@ user_tweet_freq    = OrderedDict()
 mention_tweet_freq = OrderedDict()
 
 def save_png_callback():
+    cprint('%s: attempting to save all plots...' % TAG, 
+            'yellow', attrs=['bold'])
     export_png(grid,            filename=config.HBAR_PNG)
     export_png(user_barplot,    filename=config.USER_PNG)
     export_png(mention_barplot, filename=config.MENTION_PNG)
     export_png(svg_layout,      filename=config.SVGMAP_PNG)
-    export_png(heatmap_layout,  filename=config.HEATKW_PNG)
+    export_png(neigh_heatmap,   filename=config.HEATKW_PNG)
+    cprint('%s: all plots have been saved as png figs under "%s"' % \
+            (TAG, config.IMG_DIR), 'yellow', attrs=['bold'])
 
 def init_word_barplots():
     global word_barplots
