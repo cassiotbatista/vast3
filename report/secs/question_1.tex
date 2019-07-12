@@ -1,4 +1,19 @@
-%\subsection{Characterize conditions across the city}
+In order to discern between reliable and unreliable messages, we have considered
+a bar chart of frequency of users that tweeted the most with a hover tool to
+show the most frequent words spoken by each user.
+Figure~\ref{fig:most_freq_users} shows the unfiltered distribution, in which the
+red bars represent users that are probably sellers since their messages include
+too many words like ``\emph{deal}'', ``\emph{offer}'', ``\emph{opportunity}'',
+``\emph{chances}'', etc. All tweets from those users have therefore been
+discarded.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figs/most_freq_users.png}
+    \caption{Most frequent tweeters (usernames). Red bars reresent sellers.}
+    \label{fig:most_freq_users}
+\end{figure}
+
 There appears to have occurred three earthquakes, but the first one seems to
 have started at 2~PM of the first day (April 6th), as
 can be seen at the heatmap of Figure~\ref{fig:eq_start_heat}. The heatmap is
@@ -9,6 +24,14 @@ is: ``\emph{shake}'', ``\emph{shudder}'', ``\emph{vibrate}'', ``\emph{wobble}'',
 ``\emph{tremor}'', ``\emph{tremble}'', ``\emph{quaver}'', ``\emph{quiver}'',
 ``\emph{hazard}'', ``\emph{disaster}'', ``\emph{destruction}'', and
 ``\emph{rubble}''.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.50\textwidth]{figs/cond_5h/cond_5h_svg.png}
+    \caption{St. Himark's map 5h after the first earthquake. Lighter shades of
+    green represent a higher frequency of messages for each location.}
+    \label{fig:map_5h}
+\end{figure}
 
 To ensure the heatmap is providing a reliable information, a horizontal bar
 chart, shown in Figure~\ref{fig:eq_start_hbar}, was used from 1:30~PM to 
@@ -38,22 +61,17 @@ color.
         \centering
         \includegraphics[width=1.00\textwidth]{figs/eq_start_hbar.png}
         \caption{Bar chart with blue-to-red colormap considering frequency of
-        words from Apr 6th 1:00~PM to Apr 6th 3~PM.}
+        words from 1:00~PM to 3~PM of April 6th.}
         \label{fig:eq_start_hbar}
     \end{subfigure}
     \caption{Earthquake start}
     \label{fig:eq_start}
 \end{figure}
 
-%\subsection{How resources should be allocated 5h after the earthquake?}
-iauheiuarhi aoe uageoi hroaineoh aueh ~\ref{fig:map_5h}
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.50\textwidth]{figs/cond_5h/cond_5h_svg.png}
-    \caption{St. Himark's map 5h after the first earthquake.}
-    \label{fig:map_5h}
-\end{figure}
+Figure~\ref{fig:map_5h} shows a dynamically-colored SVG map of the city, where
+the neighbourhood inner colors range from blue to red in a heatmap fashion
+according to the average mean of the colors of the five bigger bars of the
+horizontal bar chart for each location.
 
 Figure~\ref{fig:eq_cond_5h} shows the heatmap per keyword in a five-hour-time 
 interval from 2:00~PM to 6:59~PM. The top shows 3 blank graphs for the keywords
@@ -101,7 +119,7 @@ the bottom show the number of mentions for keywords related to
         \caption{Rain}
         \label{fig:rain_5h}
     \end{subfigure}
-    \caption{Earthquake conditions after 5h}
+    \caption{Conditions after 5h of the first earthquake}
     \label{fig:eq_cond_5h}
 \end{figure}
 
@@ -139,16 +157,9 @@ Downtown, Southton, Old Town and Weston.
     \centering
     \includegraphics[width=0.50\textwidth]{figs/cond_30h/cond_30h_svg.png}
     \label{fig:map_30h}
-    \caption{St. Himark's map 30h after the first earthquake.}
+    \caption{St. Himark's map 30h after the first earthquake. Yellow and orange 
+    shades represent a higher frequency of messages for each location.}
 \end{figure}
-
-By looking at the heatmap of Figure~\ref{fig:eq_cond_30h} for each keyword, it
-can be seen that there have been no occurrences for medical, and the ones
-related to sewer/water and rain have already been attended within the first five
-hours. With respect to roads and bridges in particular, there have been 3
-occurrences from 10:00~AM to 11:00~AM of April 8th at Downtown, but this
-neighbourhood is under resurfacing maintenance, which implies a road crew is
-already working there.
 
 \begin{figure}[!h]
     \centering
@@ -188,9 +199,17 @@ already working there.
         \caption{Power}
         \label{fig:power_30h}
     \end{subfigure}
-    \caption{Earthquake conditions after 30h}
+    \caption{Conditions after 30h of the first earthquake}
     \label{fig:eq_cond_30h}
 \end{figure}
+
+By looking at the heatmap of Figure~\ref{fig:eq_cond_30h} for each keyword, it
+can be seen that there have been no occurrences for medical, and the ones
+related to sewer/water and rain have already been attended within the first five
+hours. With respect to roads and bridges in particular, there have been 3
+occurrences from 10:00~AM to 11:00~AM of April 8th at Downtown, but this
+neighbourhood is under resurfacing maintenance, which implies a road crew is
+already working there.
 
 Suggestions for crew allocation is detailed as follows:
 
