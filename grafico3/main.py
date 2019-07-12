@@ -14,9 +14,9 @@ from bokeh.transform import factor_cmap
 
 data = pd.read_csv("grafico3/data/data_retweets.csv", index_col=0,parse_dates=True, infer_datetime_format=True)
 data = data.sort_index()
-data["x"] = np.arange(data.shape[0])
 data["time"] = data.index
-
+data = data.loc[data.num_re>5]
+data["x"] = np.arange(data.shape[0])
 p = figure(plot_height=450, width=1300, title="re-tweets", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source = ColumnDataSource(dict(data))
@@ -27,6 +27,8 @@ p.xgrid.grid_line_color = None
 p.hover.mode = "vline"
 p.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
+                    ("conta", "@account"),
+		    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 
 p.hover.formatters = {'time': 'datetime'}
