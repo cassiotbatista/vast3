@@ -37,6 +37,7 @@ p.hover.mode = "vline"
 p.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+      		    ("location", "@location"),
 		    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 
