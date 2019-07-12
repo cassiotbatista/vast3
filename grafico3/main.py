@@ -26,7 +26,7 @@ data["x"] = np.arange(data.shape[0])
 for idx, val in data.iterrows():
     data.loc[idx,"x_ticks"] = pd.to_datetime(str(val.time)).strftime('%m/%d@%H:%M')
 d1 = {val.x: val.x_ticks for i, val in data.iterrows()}
-p = figure(plot_height=450, width=1300, title="re-tweets", background_fill_color="#F7F7F7",
+p = figure(plot_height=450, width=1800, title="re-tweets", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source = ColumnDataSource(dict(data))
 p.vbar(x='x', top='num_re', width=1, source=source,line_color="black",fill_color=mapper)
@@ -90,7 +90,7 @@ d9 = {val.x: val.x_ticks for i, val in data_tsum.iterrows()}
 d10 = {val.x: val.x_ticks for i, val in data_circus.iterrows()}
 d11 = {val.x: val.x_ticks for i, val in data_music.iterrows()}
 
-p2 = figure(plot_height=250, width=650, title="shake", background_fill_color="#F7F7F7",
+p2 = figure(plot_height=250, width=900, title="shake", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source2 = ColumnDataSource(dict(data_shake))
 p2.vbar(x='x', top='num_re', width=1, source=source2,fill_color=mapper, line_color='black')
@@ -111,7 +111,7 @@ p2.x_range.range_padding = 0.01
 p2.hover.point_policy ="follow_mouse"
 #p2.xaxis.major_label_orientation = 5
 
-p3 = figure(plot_height=250, width=650, title="power", background_fill_color="#F7F7F7",
+p3 = figure(plot_height=250, width=900, title="power", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source3 = ColumnDataSource(dict(data_power))
 p3.vbar(x='x', top='num_re', width=1, source=source3,fill_color=mapper, line_color='black')
@@ -131,7 +131,7 @@ p3.xaxis.axis_label="time"
 p3.yaxis.axis_label="quntidade de retweets"
 p3.hover.point_policy ="follow_mouse"
 
-p4 = figure(plot_height=250, width=650, title="bridge", background_fill_color="#F7F7F7",
+p4 = figure(plot_height=250, width=900, title="bridge", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source4 = ColumnDataSource(dict(data_bridge))
 p4.vbar(x='x', top='num_re', width=1, source=source4,fill_color=mapper, line_color='black')
@@ -151,7 +151,7 @@ p4.xaxis.axis_label="time"
 p4.yaxis.axis_label="quntidade de retweets"
 p4.hover.point_policy ="follow_mouse"
 
-p5 = figure(plot_height=250, width=650, title="hospital", background_fill_color="#F7F7F7",
+p5 = figure(plot_height=250, width=900, title="hospital", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source5 = ColumnDataSource(dict(data_hsptal))
 p5.vbar(x='x', top='num_re', width=1, source=source5,fill_color=mapper, line_color='black')
@@ -171,7 +171,7 @@ p5.xaxis.axis_label="time"
 p5.yaxis.axis_label="quntidade de retweets"
 p5.hover.point_policy ="follow_mouse"
 
-p6 = figure(plot_height=250, width=650, title="build", background_fill_color="#F7F7F7",
+p6 = figure(plot_height=250, width=900, title="build", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save", x_range=(-3,3))
 source6 = ColumnDataSource(dict(data_build))
 p6.vbar(x='x', top='num_re', width=0.3, source=source6,fill_color=mapper, line_color='black')
@@ -191,7 +191,7 @@ p6.xaxis.axis_label="time"
 p6.yaxis.axis_label="quntidade de retweets"
 p6.hover.point_policy ="follow_mouse"
 
-p7 = figure(plot_height=250, width=650, title="water", background_fill_color="#F7F7F7",
+p7 = figure(plot_height=250, width=900, title="water", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source7 = ColumnDataSource(dict(data_water))
 p7.vbar(x='x', top='num_re', width=1, source=source7,fill_color=mapper, line_color='black')
@@ -211,7 +211,7 @@ p7.xaxis.axis_label="time"
 p7.yaxis.axis_label="quntidade de retweets"
 p7.hover.point_policy ="follow_mouse"
 
-p8 = figure(plot_height=250, width=650, title="rain", background_fill_color="#F7F7F7",
+p8 = figure(plot_height=250, width=900, title="rain", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source8 = ColumnDataSource(dict(data_rain))
 p8.vbar(x='x', top='num_re', width=1, source=source8,fill_color=mapper, line_color='black')
@@ -231,7 +231,7 @@ p8.xaxis.axis_label="time"
 p8.yaxis.axis_label="quntidade de retweets"
 p8.hover.point_policy ="follow_mouse"
 
-p9 = figure(plot_height=250, width=650, title="tsunami", background_fill_color="#F7F7F7",
+p9 = figure(plot_height=250, width=900, title="tsunami", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source9 = ColumnDataSource(dict(data_tsum))
 p9.vbar(x='x', top='num_re', width=1, source=source9,fill_color=mapper, line_color='black')
@@ -251,7 +251,7 @@ p9.xaxis.axis_label="time"
 p9.yaxis.axis_label="quntidade de retweets"
 p9.hover.point_policy ="follow_mouse"
 
-p10 = figure(plot_height=250, width=650, title="circus", background_fill_color="#F7F7F7",
+p10 = figure(plot_height=250, width=900, title="circus", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source10 = ColumnDataSource(dict(data_circus))
 p10.vbar(x='x', top='num_re', width=1, source=source10,fill_color=mapper, line_color='black')
@@ -271,7 +271,7 @@ p10.xaxis.axis_label="time"
 p10.yaxis.axis_label="quntidade de retweets"
 p10.hover.point_policy ="follow_mouse"
 
-p11 = figure(plot_height=250, width=650, title="music", background_fill_color="#F7F7F7",
+p11 = figure(plot_height=250, width=900, title="music", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source11 = ColumnDataSource(dict(data_music))
 p11.vbar(x='x', top='num_re', width=1, source=source11,fill_color=mapper, line_color='black')
