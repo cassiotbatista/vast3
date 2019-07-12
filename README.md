@@ -7,6 +7,8 @@ the [3rd mini-challenge](https://vast-challenge.github.io/2019/MC3.html) of the
 
 ![2nd tool](screenshots/grafico2.gif)
 
+![preprocessing](screenshots/preprocessing.png)
+
 ## Execution Instructions
 ```bash
 $ bokeh serve --show <DIR>
