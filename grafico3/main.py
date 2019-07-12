@@ -29,7 +29,7 @@ d1 = {val.x: val.x_ticks for i, val in data.iterrows()}
 p = figure(plot_height=450, width=1300, title="re-tweets", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source = ColumnDataSource(dict(data))
-p.vbar(x='x', top='num_re', width=1, source=source,line_color="white",fill_color=mapper)
+p.vbar(x='x', top='num_re', width=1, source=source,line_color="black",fill_color=mapper)
 p.y_range.start = 0
 p.x_range.range_padding = 0.1
 p.xgrid.grid_line_color = None
@@ -85,7 +85,7 @@ d9 = {val.x: val.x_ticks for i, val in data_tsum.iterrows()}
 p2 = figure(plot_height=250, width=650, title="shake", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source2 = ColumnDataSource(dict(data_shake))
-p2.vbar(x='x', top='num_re', width=1, source=source2,fill_color=mapper, line_color='white')
+p2.vbar(x='x', top='num_re', width=1, source=source2,fill_color=mapper, line_color='black')
 p2.y_range.start = 0
 p2.xgrid.grid_line_color = None
 p2.hover.mode = "vline"
@@ -106,7 +106,7 @@ p2.hover.point_policy ="follow_mouse"
 p3 = figure(plot_height=250, width=650, title="power", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source3 = ColumnDataSource(dict(data_power))
-p3.vbar(x='x', top='num_re', width=1, source=source3,fill_color=mapper, line_color='white')
+p3.vbar(x='x', top='num_re', width=1, source=source3,fill_color=mapper, line_color='black')
 p3.y_range.start = 0
 p3.xaxis.major_label_overrides = d3
 p3.x_range.range_padding = 0.01
@@ -126,7 +126,7 @@ p3.hover.point_policy ="follow_mouse"
 p4 = figure(plot_height=250, width=650, title="bridge", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source4 = ColumnDataSource(dict(data_bridge))
-p4.vbar(x='x', top='num_re', width=1, source=source4,fill_color=mapper, line_color='white')
+p4.vbar(x='x', top='num_re', width=1, source=source4,fill_color=mapper, line_color='black')
 p4.y_range.start = 0
 p4.xaxis.major_label_overrides = d4
 p4.x_range.range_padding = 0.01
@@ -146,7 +146,7 @@ p4.hover.point_policy ="follow_mouse"
 p5 = figure(plot_height=250, width=650, title="hospital", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source5 = ColumnDataSource(dict(data_hsptal))
-p5.vbar(x='x', top='num_re', width=1, source=source5,fill_color=mapper, line_color='white')
+p5.vbar(x='x', top='num_re', width=1, source=source5,fill_color=mapper, line_color='black')
 p5.y_range.start = 0
 p5.xaxis.major_label_overrides = d5
 p5.x_range.range_padding = 0.01
@@ -166,7 +166,7 @@ p5.hover.point_policy ="follow_mouse"
 p6 = figure(plot_height=250, width=650, title="build", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save", x_range=(-3,3))
 source6 = ColumnDataSource(dict(data_build))
-p6.vbar(x='x', top='num_re', width=0.3, source=source6,fill_color=mapper, line_color='white')
+p6.vbar(x='x', top='num_re', width=0.3, source=source6,fill_color=mapper, line_color='black')
 p6.y_range.start = 0
 p6.xaxis.major_label_overrides = d6
 #p6.x_range.range_padding = 0.01
@@ -186,7 +186,7 @@ p6.hover.point_policy ="follow_mouse"
 p7 = figure(plot_height=250, width=650, title="water", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source7 = ColumnDataSource(dict(data_water))
-p7.vbar(x='x', top='num_re', width=1, source=source7,fill_color=mapper, line_color='white')
+p7.vbar(x='x', top='num_re', width=1, source=source7,fill_color=mapper, line_color='black')
 p7.y_range.start = 0
 p7.xaxis.major_label_overrides = d7
 p7.x_range.range_padding = 0.01
@@ -206,7 +206,7 @@ p7.hover.point_policy ="follow_mouse"
 p8 = figure(plot_height=250, width=650, title="rain", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source8 = ColumnDataSource(dict(data_rain))
-p8.vbar(x='x', top='num_re', width=1, source=source8,fill_color=mapper, line_color='white')
+p8.vbar(x='x', top='num_re', width=1, source=source8,fill_color=mapper, line_color='black')
 p8.y_range.start = 0
 p8.xaxis.major_label_overrides = d8
 p8.x_range.range_padding = 0.01
@@ -226,7 +226,7 @@ p8.hover.point_policy ="follow_mouse"
 p9 = figure(plot_height=250, width=650, title="tsunami", background_fill_color="#F7F7F7",
            tools="hover,box_select,pan,wheel_zoom,box_zoom,reset,save")
 source9 = ColumnDataSource(dict(data_tsum))
-p9.vbar(x='x', top='num_re', width=1, source=source9,fill_color=mapper, line_color='white')
+p9.vbar(x='x', top='num_re', width=1, source=source9,fill_color=mapper, line_color='black')
 p9.y_range.start = 0
 p9.xaxis.major_label_overrides = d9
 p9.x_range.range_padding = 0.01
