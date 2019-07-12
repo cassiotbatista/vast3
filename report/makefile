@@ -7,4 +7,4 @@ all:
 
 clean:
 	rm -f *.aux *.log *.out
-	cd secs && rm -f *.aux
+	cd secs && rm -f *.aux *.log
