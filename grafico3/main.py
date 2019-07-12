@@ -84,6 +84,7 @@ p2.hover.mode = "vline"
 p2.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+		    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 p2.hover.formatters = {'time': 'datetime'}
 p2.xaxis.axis_label="time"
@@ -105,6 +106,7 @@ p3.hover.mode = "vline"
 p3.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+	   	    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 p3.hover.formatters = {'time': 'datetime'}
 p3.xaxis.axis_label="time"
@@ -123,6 +125,7 @@ p4.hover.mode = "vline"
 p4.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+		    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 p4.hover.formatters = {'time': 'datetime'}
 p4.xaxis.axis_label="time"
@@ -141,6 +144,7 @@ p5.hover.mode = "vline"
 p5.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+		    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 p5.hover.formatters = {'time': 'datetime'}
 p5.xaxis.axis_label="time"
@@ -159,6 +163,7 @@ p6.hover.mode = "vline"
 p6.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+	   	    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 p6.hover.formatters = {'time': 'datetime'}
 p6.xaxis.axis_label="time"
@@ -177,6 +182,7 @@ p7.hover.mode = "vline"
 p7.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+		    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 p7.hover.formatters = {'time': 'datetime'}
 p7.xaxis.axis_label="time"
@@ -195,6 +201,7 @@ p8.hover.mode = "vline"
 p8.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+		    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 p8.hover.formatters = {'time': 'datetime'}
 p8.xaxis.axis_label="time"
@@ -213,6 +220,7 @@ p9.hover.mode = "vline"
 p9.hover.tooltips = [("data", "@time{%F %T}"),
                     ("chave", "@word"),
                     ("conta", "@account"),
+		    ("re-tweets", "@num_re"),
                     ("tweet", "@message")]
 p9.hover.formatters = {'time': 'datetime'}
 p9.xaxis.axis_label="time"
