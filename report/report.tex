@@ -4,13 +4,16 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{hyperref}
-\usepackage{caption}
+\usepackage[font=footnotesize]{caption}
 \usepackage{subcaption}
 \usepackage{url}
 \usepackage{setspace}
 
 \renewcommand{\rmdefault}{phv}
 \onehalfspacing
+
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
 
 \title{} 
 \author{
@@ -66,7 +69,6 @@ after VAST Challenge 2019 is complete?} YES \\
 \noindent
 \textbf{Video:} \url{https://youtube.com/?v=vaietefuder}\\
 
-%\newpage
 \noindent
 \textbf{Questions} \\
 \footnotesize{\textcolor{gray}{The City has been using Y*INT to communicate with
@@ -79,7 +81,10 @@ distribution of resources. Keep in mind that not all sources on Y*INT are
 reliable, and that priorities may change over time as the state of neighborhoods
 also changes.}}
 
+\newpage
 \begin{enumerate}
+    \stepcounter{section}
+    \section*{\tiny} % question 1
     \item \textcolor{gray}{Using  visual analytics, characterize conditions
         across the city and recommend how resources should be allocated at 5
         hours and 30 hours after the earthquake. Include evidence from the data
@@ -90,6 +95,8 @@ also changes.}}
     \input{secs/question_1}
     \newpage
 
+    \stepcounter{section}
+    \section*{\tiny} % question 2
     \item \textcolor{gray}{Identify at least 3 times when conditions change in
         a way that warrants a re-allocation of city resources. What were the
         conditions before and after the inflection point? What locations were
@@ -98,6 +105,8 @@ also changes.}}
 
     \input{secs/question_2}
 
+    \stepcounter{section}
+    \section*{\tiny} % question 3
     \item \textcolor{gray}{Take the pulse of the community.  How has the
         earthquake affected life in St. Himark? What is the community
         experiencing outside the realm of the first two questions? Show decision
@@ -106,6 +115,8 @@ also changes.}}
 
     \input{secs/question_3}
 
+    \stepcounter{section}
+    \section*{\tiny} % question 4
     \item \textcolor{gray}{The data for this challenge can be analyzed either as
         a static collection or as a dynamic stream of data, as it would occur in
         a real emergency. Describe how you analyzed the data --- as a static
