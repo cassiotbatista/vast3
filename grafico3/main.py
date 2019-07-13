@@ -12,7 +12,7 @@ from bokeh.palettes import Spectral11
 from bokeh.plotting import figure
 from bokeh.transform import factor_cmap, linear_cmap
 
-mapper = linear_cmap(field_name="num_re", palette=Spectral11, low=0, high=70)
+mapper = linear_cmap(field_name="num_re", palette=Spectral11, low=0, high=76)
 color_bar = ColorBar(
         color_mapper = mapper['transform'], 
         width        = 8,

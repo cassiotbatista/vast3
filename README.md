@@ -13,7 +13,7 @@ the [3rd mini-challenge](https://vast-challenge.github.io/2019/MC3.html) of the
 ```bash
 $ bokeh serve --show <DIR>
 ```
-where `<DIR>` can be either `grafico1/`, `grafico2/`or `gui/`.
+where `<DIR>` can be either `grafico1/`, `grafico2/`, `grafico3/`or `gui/`.
 
 ## Tools and Libraries
 - [Python](https://www.python.org/downloads/) (v3.5.3)
